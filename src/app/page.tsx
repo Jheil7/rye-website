@@ -140,7 +140,7 @@ function Contact() {
       </div>
       <div className="mt-3 flex items-center gap-2">
         <FaUser size={24} />
-        <span>Ytu-Mal&aposGanis</span>
+        <span>{"Ytu-Mal'Ganis"}</span>
       </div>
     </Card>
   );
