@@ -39,7 +39,8 @@ function AboutSection() {
         <div>
           <h2 className="text-xl font-semibold">About Us</h2>
           <h3 className="text-md">
-            Welcome to Raise Your Eyes, a Cutting Edge raiding guild on
+            <p>
+              {`Welcome to Raise Your Eyes, a Cutting Edge raiding guild on
             Mal'Ganis – US. Our guild was created with the intention of
             providing exceptional players, many of which are returning to WoW
             after years away, an avenue through which to advance their abilities
@@ -49,7 +50,8 @@ function AboutSection() {
             numbers. Raise Your Eyes is a guild where all voices can be heard.
             We have no “core officer group” of IRL friends who have played
             together for 10 years, instead, we have come together as a group
-            where every raider can voice their opinion.
+            where every raider can voice their opinion.`}
+            </p>
             <h2 className="mt-6 text-xl font-semibold">Links</h2>
             <div>
               <a
@@ -138,7 +140,7 @@ function Contact() {
       </div>
       <div className="mt-3 flex items-center gap-2">
         <FaUser size={24} />
-        <span>Ytu-Mal'Ganis</span>
+        <span>Ytu-Mal&aposGanis</span>
       </div>
     </Card>
   );
