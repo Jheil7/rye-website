@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Card from "../_components/Card";
 import { CLASS_BY_ID } from "src/classes";
 
