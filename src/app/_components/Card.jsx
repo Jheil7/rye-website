@@ -1,3 +1,4 @@
+// @ts-nocheck
 export default function Card({ children }) {
   return (
     <div className="px-6">
