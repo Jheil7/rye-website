@@ -4,6 +4,11 @@ import { CLASS_BY_ID } from "src/classes";
 
 const BNET_ID = process.env.BLIZZARD_CLIENT_ID;
 const BNET_SECRET = process.env.BLIZZARD_CLIENT_SECRET;
+const warcraftlogsURL = "https://www.warcraftlogs.com/character/us";
+const guildAPI =
+  "https://us.api.blizzard.com/data/wow/guild/malganis/raise-your-eyes/roster?namespace=profile-us&locale=en_US";
+const characterAPIPrefix = "https://us.api.blizzard.com/profile/wow/character/";
+const characterAPISuffix = "?namespace=profile-us";
 
 export default async function App() {
   const roster = await showRoster();
@@ -16,14 +21,22 @@ export default async function App() {
   return (
     <Card>
       <h3 className="text-xl font-bold">Mythic Roster ({rosterCount})</h3>
+      <li className="grid grid-cols-[30px_0.5fr_0.5fr_160px] items-center gap-3 py-2 text-lg">
+        <div>Name</div>
+        <div></div>
+        <div>Class</div>
+        <div>Warcraftlogs URL</div>
+      </li>
       <ul>
         {sortedRoster.map((member) => {
           const classId = member.character.playable_class.id;
           const wowClass = CLASS_BY_ID[classId];
-
+          const logsURL = `${warcraftlogsURL}/${member.character.realm.slug}/${encodeURIComponent(member.character.name)}`;
+          const playerURL = `${characterAPIPrefix}${member.character.realm.slug}/${encodeURIComponent(member.character.name.toLowerCase())}${characterAPISuffix}`;
+          // const characterData = getCharacter(playerURL);
           return (
             <li
-              className="mt-3 flex items-center gap-3"
+              className="grid grid-cols-[30px_0.5fr_0.5fr_160px] items-center gap-3 py-2"
               key={member.character.id}
             >
               <img
@@ -32,10 +45,20 @@ export default async function App() {
                 className="h-8 w-8 rounded"
               />
               <span>{member.character.name}</span>
-              <span className="ml-2 text-sm opacity-70">
+
+              <span className="text-sm opacity-70">
                 {" "}
                 {wowClass ? wowClass.name : `Class ${classId}`}{" "}
               </span>
+              <a
+                href={logsURL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="break-all text-blue-400 hover:underline"
+              >
+                Link
+              </a>
+              {/* <span>{characterData.active_spec?.name ?? "Unknown Spec"}</span> */}
             </li>
           );
         })}
@@ -44,7 +67,8 @@ export default async function App() {
   );
 }
 
-async function showRoster() {
+//base API fetch function
+async function getAPI(apiURL) {
   const accessToken = await fetchToken();
   const myHeaders2 = new Headers();
   myHeaders2.append("Authorization", `Bearer ${accessToken}`);
@@ -55,26 +79,37 @@ async function showRoster() {
     redirect: "follow",
   };
 
-  const rosterFetch = await fetch(
-    "https://us.api.blizzard.com/data/wow/guild/malganis/raise-your-eyes/roster?namespace=profile-us&locale=en_US",
-    requestOptions2,
-  );
-  const rosterJson = await rosterFetch.json();
-  const filteredMembers = rosterJson.members.filter((member) => {
+  const apiFetchPromise = await fetch(apiURL, requestOptions2);
+  const apiFetchJSON = await apiFetchPromise.json();
+  return apiFetchJSON;
+}
+
+//pull guild API function
+async function showRoster() {
+  const rosterFetch = await getAPI(guildAPI);
+
+  const filteredMembers = rosterFetch.members.filter((member) => {
     return member.rank <= 2;
   });
 
   return filteredMembers;
 }
 
+async function getCharacter(characterURL) {
+  const characterFetch = await getAPI(characterURL);
+  console.log(characterFetch);
+  return characterFetch;
+  // https://us.api.blizzard.com/profile/wow/character/area-52/Monkurial?namespace=profile-us
+  // https://us.api.blizzard.com/profile/wow/character/area-52/monkurial?namespace=profile-us
+  // /profile/wow/character/{realmSlug}/{characterName}?namespace=profile-us&locale=en_US
+}
+
+//Oauth token request
 async function fetchToken() {
   const myHeaders = new Headers();
-  const BNET_ID = "2d7af39a1d4e4e3380864980153c4298";
-  const BNET_SECRET = "2TRHK75anPYIlBnn1yomCd2KBffcXicM";
   const credentials = Buffer.from(`${BNET_ID}:${BNET_SECRET}`).toString(
     "base64",
   );
-  console.log(credentials);
   myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
   myHeaders.append("Authorization", `Basic ${credentials}`);
 
@@ -92,7 +127,14 @@ async function fetchToken() {
     "https://oauth.battle.net/token",
     requestOptions,
   );
+
+  if (!response.ok) {
+    const text = await response.text();
+    console.log("Token error body:", text);
+    throw new Error(`Token request failed: ${response.status}`);
+  }
   const json = await response.json();
+  console.log("Token keys:", Object.keys(json));
   const accessToken = json.access_token;
 
   return accessToken;
