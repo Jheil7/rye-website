@@ -3,8 +3,9 @@ import { CLASSES } from "src/classes";
 import { FaDiscord } from "react-icons/fa";
 import { FaBattleNet } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
+import Card from "./_components/Card";
 
-const rolesNeeded = ["mage", "rogue", "deathknight"] as const;
+const rolesNeeded = ["mage", "rogue", "deathknight"];
 const warcraftlogspage =
   "https://www.warcraftlogs.com/guild/us/malganis/raise%20your%20eyes";
 const raideriopage = "https://raider.io/guilds/us/malganis/Raise%20Your%20Eyes";
@@ -12,22 +13,11 @@ const raideriopage = "https://raider.io/guilds/us/malganis/Raise%20Your%20Eyes";
 export default async function Home() {
   return (
     <div>
-      <Navbar />
       <AboutSection />
       <RaidSchedule />
       <Card>raid progress (WIP)</Card>
       <RolesSection />
       <Contact />
-    </div>
-  );
-}
-
-function Card({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="px-6">
-      <div className="mx-auto my-6 max-w-xl rounded-lg bg-gray-700 p-6">
-        {children}
-      </div>
     </div>
   );
 }
@@ -52,28 +42,28 @@ function AboutSection() {
             together for 10 years, instead, we have come together as a group
             where every raider can voice their opinion.`}
             </p>
-            <h2 className="mt-6 text-xl font-semibold">Links</h2>
-            <div>
-              <a
-                href={warcraftlogspage}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="break-all text-blue-400 hover:underline"
-              >
-                Warcraft Logs
-              </a>
-            </div>
-            <div>
-              <a
-                href={raideriopage}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="break-all text-blue-400 hover:underline"
-              >
-                raider.io
-              </a>
-            </div>
           </h3>
+          <h2 className="mt-6 text-xl font-semibold">Links</h2>
+          <div>
+            <a
+              href={warcraftlogspage}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="break-all text-blue-400 hover:underline"
+            >
+              Warcraft Logs
+            </a>
+          </div>
+          <div>
+            <a
+              href={raideriopage}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="break-all text-blue-400 hover:underline"
+            >
+              raider.io
+            </a>
+          </div>
         </div>
       </Card>
     </div>
