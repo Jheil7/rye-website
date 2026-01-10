@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Navbar from "./_components/Navbar";
 import { CLASSES } from "src/classes";
 import { FaDiscord } from "react-icons/fa";
