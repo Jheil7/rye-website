@@ -5,7 +5,6 @@ import { FaDiscord } from "react-icons/fa";
 import { FaBattleNet } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
 import Card from "./_components/Card";
-import HashHighlighter from "./_components/HashHighlighter";
 
 const rolesNeeded = ["mage", "rogue", "deathknight"];
 const warcraftlogspage =
