@@ -1,3 +1,5 @@
+import Card from "src/app/_components/Card.jsx";
+
 export default async function Home() {
-  return <div>Apply HERE!!!</div>;
+  return <Card>apply here</Card>;
 }

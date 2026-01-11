@@ -19,51 +19,53 @@ export default async function App() {
   );
 
   return (
-    <Card>
-      <h3 className="text-xl font-bold">Mythic Roster ({rosterCount})</h3>
-      <li className="grid grid-cols-[30px_0.5fr_0.5fr_160px] items-center gap-3 py-2 text-lg">
-        <div>Name</div>
-        <div></div>
-        <div>Class</div>
-        <div>Warcraftlogs URL</div>
-      </li>
-      <ul>
-        {sortedRoster.map((member) => {
-          const classId = member.character.playable_class.id;
-          const wowClass = CLASS_BY_ID[classId];
-          const logsURL = `${warcraftlogsURL}/${member.character.realm.slug}/${encodeURIComponent(member.character.name)}`;
-          const playerURL = `${characterAPIPrefix}${member.character.realm.slug}/${encodeURIComponent(member.character.name.toLowerCase())}${characterAPISuffix}`;
-          // const characterData = getCharacter(playerURL);
-          return (
-            <li
-              className="grid grid-cols-[30px_0.5fr_0.5fr_160px] items-center gap-3 py-2"
-              key={member.character.id}
-            >
-              <img
-                src={wowClass.icon}
-                alt={wowClass.name}
-                className="h-8 w-8 rounded"
-              />
-              <span>{member.character.name}</span>
-
-              <span className="text-sm opacity-70">
-                {" "}
-                {wowClass ? wowClass.name : `Class ${classId}`}{" "}
-              </span>
-              <a
-                href={logsURL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="break-all text-blue-400 hover:underline"
+    <div className="mx-auto mt-6 max-w-6xl space-y-6 px-6">
+      <Card>
+        <h3 className="text-xl font-bold">Mythic Roster ({rosterCount})</h3>
+        <li className="grid grid-cols-[30px_0.5fr_0.5fr_160px] items-center gap-3 py-2 text-lg">
+          <div>Name</div>
+          <div></div>
+          <div>Class</div>
+          <div>Warcraftlogs URL</div>
+        </li>
+        <ul>
+          {sortedRoster.map((member) => {
+            const classId = member.character.playable_class.id;
+            const wowClass = CLASS_BY_ID[classId];
+            const logsURL = `${warcraftlogsURL}/${member.character.realm.slug}/${encodeURIComponent(member.character.name)}`;
+            const playerURL = `${characterAPIPrefix}${member.character.realm.slug}/${encodeURIComponent(member.character.name.toLowerCase())}${characterAPISuffix}`;
+            // const characterData = getCharacter(playerURL);
+            return (
+              <li
+                className="grid grid-cols-[30px_0.5fr_0.5fr_160px] items-center gap-3 py-2"
+                key={member.character.id}
               >
-                Link
-              </a>
-              {/* <span>{characterData.active_spec?.name ?? "Unknown Spec"}</span> */}
-            </li>
-          );
-        })}
-      </ul>
-    </Card>
+                <img
+                  src={wowClass.icon}
+                  alt={wowClass.name}
+                  className="h-8 w-8 rounded"
+                />
+                <span>{member.character.name}</span>
+
+                <span className="text-sm opacity-70">
+                  {" "}
+                  {wowClass ? wowClass.name : `Class ${classId}`}{" "}
+                </span>
+                <a
+                  href={logsURL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="break-all text-blue-400 hover:underline"
+                >
+                  Link
+                </a>
+                {/* <span>{characterData.active_spec?.name ?? "Unknown Spec"}</span> */}
+              </li>
+            );
+          })}
+        </ul>
+      </Card>
+    </div>
   );
 }
 

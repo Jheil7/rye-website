@@ -5,30 +5,38 @@ import { FaDiscord } from "react-icons/fa";
 import { FaBattleNet } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
 import Card from "./_components/Card";
+import HashHighlighter from "./_components/HashHighlighter";
 
 const rolesNeeded = ["mage", "rogue", "deathknight"];
 const warcraftlogspage =
   "https://www.warcraftlogs.com/guild/us/malganis/raise%20your%20eyes";
 const raideriopage = "https://raider.io/guilds/us/malganis/Raise%20Your%20Eyes";
 
-export default async function Home() {
+export default function Home() {
   return (
-    <div>
+    <div className="mx-auto mt-6 max-w-6xl space-y-6 px-6">
       <AboutSection />
-      <RaidSchedule />
-      <Card>raid progress (WIP)</Card>
+
+      <div className="grid gap-3 md:grid-cols-2">
+        <RaidSchedule />
+        <LinksSection />
+      </div>
+
+      <RaidProgress />
+
       <RolesSection />
       <Contact />
     </div>
   );
 }
+//className="grid gap-6 md:grid-cols-2"
 
 function AboutSection() {
   return (
     <div>
       <Card>
         <div>
-          <h2 className="text-xl font-semibold">About Us</h2>
+          <h2 className="text-center text-xl font-semibold">About Us</h2>
           <h3 className="text-md">
             <p>
               {`Welcome to Raise Your Eyes, a Cutting Edge raiding guild on
@@ -44,27 +52,6 @@ function AboutSection() {
             where every raider can voice their opinion.`}
             </p>
           </h3>
-          <h2 className="mt-6 text-xl font-semibold">Links</h2>
-          <div>
-            <a
-              href={warcraftlogspage}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="break-all text-blue-400 hover:underline"
-            >
-              Warcraft Logs
-            </a>
-          </div>
-          <div>
-            <a
-              href={raideriopage}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="break-all text-blue-400 hover:underline"
-            >
-              raider.io
-            </a>
-          </div>
         </div>
       </Card>
     </div>
@@ -119,7 +106,7 @@ function RolesSection() {
 
 function Contact() {
   return (
-    <Card>
+    <Card id="contact">
       <h2 className="text-xl font-semibold">Contact</h2>
       <div className="mt-3 flex items-center gap-2">
         <FaDiscord size={24} />
@@ -132,6 +119,40 @@ function Contact() {
       <div className="mt-3 flex items-center gap-2">
         <FaUser size={24} />
         <span>{"Ytu-Mal'Ganis"}</span>
+      </div>
+    </Card>
+  );
+}
+
+function RaidProgress() {
+  const progressTileUrl =
+    "https://www.warcraftlogs.com/embed/guild-progress-tile/44?difficulty=5&guild=648503";
+  return <Card>raid prog</Card>;
+}
+
+function LinksSection() {
+  return (
+    <Card>
+      <h2 className="text-xl font-semibold">Links</h2>
+      <div>
+        <a
+          href={warcraftlogspage}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="break-all text-blue-400 hover:underline"
+        >
+          Warcraft Logs
+        </a>
+      </div>
+      <div>
+        <a
+          href={raideriopage}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="break-all text-blue-400 hover:underline"
+        >
+          raider.io
+        </a>
       </div>
     </Card>
   );

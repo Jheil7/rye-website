@@ -1,3 +1,5 @@
+// @ts-nocheck
+"use client";
 import Link from "next/link";
 
 export default function Navbar() {
@@ -13,7 +15,8 @@ export default function Navbar() {
             <Link href="/">Home</Link>
             <Link href="/roster">Roster</Link>
             <Link href="/apply">Apply</Link>
-            <Link href="/contact">Contact</Link>
+            {/* <Link href="/#contact">Contact</Link> */}
+            <Link href="/TwitchStreams">Twitch Streams</Link>
           </div>
         </div>
       </nav>

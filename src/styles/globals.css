@@ -6,6 +6,10 @@
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* @layer components {
   .nav-style {
     @apply mt-2 justify-center gap-8 bg-gray-600 p-5;

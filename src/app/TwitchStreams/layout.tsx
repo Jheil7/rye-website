@@ -1,6 +1,6 @@
 import "~/styles/globals.css";
 
-export default function RosterLayout({
+export default function ApplyLayout({
   children,
 }: {
   children: React.ReactNode;
