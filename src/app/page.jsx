@@ -5,6 +5,7 @@ import { FaDiscord } from "react-icons/fa";
 import { FaBattleNet } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
 import Card from "./_components/Card";
+import { warcraftlogsFetch } from "../lib/warcraftlogs api/warcraftlogsfetch";
 
 const rolesNeeded = ["mage", "rogue", "deathknight"];
 const warcraftlogspage =
@@ -123,10 +124,60 @@ function Contact() {
   );
 }
 
-function RaidProgress() {
-  const progressTileUrl =
-    "https://www.warcraftlogs.com/embed/guild-progress-tile/44?difficulty=5&guild=648503";
-  return <Card>raid prog</Card>;
+async function RaidProgress() {
+  const worldRankQuery = `query {
+    guildData {
+      guild(name: "Raise Your Eyes", serverSlug: "malganis", serverRegion: "US"){
+          zoneRanking(zoneId:44){
+                  progress{
+                      worldRank{
+                          number
+                      }
+                  }
+              }
+          }
+      }
+  }`;
+
+  const serverRankQuery = `query {
+    guildData {
+      guild(name: "Raise Your Eyes", serverSlug: "malganis", serverRegion: "US"){
+          zoneRanking(zoneId:44){
+                  progress{
+                      serverRank{
+                          number
+                      }
+                  }
+              }
+          }
+      }
+  }`;
+
+  const worldRankFetch = await warcraftlogsFetch(worldRankQuery);
+  const worldRank =
+    worldRankFetch?.data?.guildData?.guild?.zoneRanking?.progress?.worldRank
+      ?.number;
+
+  const serverRankFetch = await warcraftlogsFetch(serverRankQuery);
+  const serverRank =
+    serverRankFetch?.data?.guildData?.guild?.zoneRanking?.progress?.serverRank
+      ?.number;
+
+  return (
+    <Card>
+      <h2 className="text-center text-xl font-semibold">Raid Progress</h2>
+      <div className="grid gap-3 md:grid-cols-3">
+        <div>
+          <h2 className="font-semibold">Current guild rank (world)</h2>
+          <h3> {worldRank}</h3>
+        </div>
+        <div>
+          <h2 className="font-semibold">Current guild rank (server)</h2>
+          <h3> {serverRank}</h3>
+        </div>
+      </div>
+    </Card>
+  );
 }
 
 function LinksSection() {
