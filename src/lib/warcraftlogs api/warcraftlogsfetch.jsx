@@ -1,3 +1,4 @@
+// @ts-nocheck
 const WARCRAFTLOGS_ID = process.env.WARCRAFTLOGS_CLIENT_ID;
 const WARCRAFTLOGS_SECRET = process.env.WARCRAFTLOGS_CLIENT_SECRET;
 
