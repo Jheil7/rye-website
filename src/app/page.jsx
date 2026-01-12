@@ -133,17 +133,6 @@ async function RaidProgress() {
                       worldRank{
                           number
                       }
-                  }
-              }
-          }
-      }
-  }`;
-
-  const serverRankQuery = `query {
-    guildData {
-      guild(name: "Raise Your Eyes", serverSlug: "malganis", serverRegion: "US"){
-          zoneRanking(zoneId:44){
-                  progress{
                       serverRank{
                           number
                       }
@@ -153,14 +142,13 @@ async function RaidProgress() {
       }
   }`;
 
-  const worldRankFetch = await warcraftlogsFetch(worldRankQuery);
+  const guildRankFetch = await warcraftlogsFetch(worldRankQuery);
   const worldRank =
-    worldRankFetch?.data?.guildData?.guild?.zoneRanking?.progress?.worldRank
+    guildRankFetch?.data?.guildData?.guild?.zoneRanking?.progress?.worldRank
       ?.number;
 
-  const serverRankFetch = await warcraftlogsFetch(serverRankQuery);
   const serverRank =
-    serverRankFetch?.data?.guildData?.guild?.zoneRanking?.progress?.serverRank
+    guildRankFetch?.data?.guildData?.guild?.zoneRanking?.progress?.serverRank
       ?.number;
 
   return (
