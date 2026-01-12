@@ -175,6 +175,10 @@ async function RaidProgress() {
           <h2 className="font-semibold">Current guild rank (server)</h2>
           <h3> {serverRank}</h3>
         </div>
+        <div>
+          <h2 className="font-semibold">Current boss progress</h2>
+          <h3>(working on API call)</h3>
+        </div>
       </div>
     </Card>
   );
