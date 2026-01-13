@@ -16,6 +16,7 @@ export async function warcraftlogsFetch(query) {
     headers: myHeaders,
     body: graphql,
     redirect: "follow",
+    next: { revalidate: 600 },
   };
 
   const apiFetchJSON = await fetch(
