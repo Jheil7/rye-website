@@ -2,9 +2,10 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
-  const [mobileFormat, setIsMobileFormat] = useState(false);
+  const pathName = usePathname();
   return (
     <>
       <nav>
@@ -15,12 +16,47 @@ export default function Navbar() {
               Raise Your Eyes
             </span>
           </div>
-          <div className="text-md flex items-center gap-3 underline md:gap-5 md:text-2xl">
-            <Link href="/">Home</Link>
-            <Link href="/roster">Roster</Link>
-            <Link href="/apply">Apply</Link>
+          <div className="text-md flex items-center gap-3 md:gap-5 md:text-2xl">
+            <Link
+              href="/"
+              className={
+                pathName === "/" ? "text-blue-300 underline" : "hover:underline"
+              }
+            >
+              Home
+            </Link>
+            <Link
+              href="/roster"
+              className={
+                pathName === "/roster"
+                  ? "text-blue-300 underline"
+                  : "hover:underline"
+              }
+            >
+              {" "}
+              Roster
+            </Link>
+            <Link
+              href="/apply"
+              className={
+                pathName === "/apply"
+                  ? "text-blue-300 underline"
+                  : "hover:underline"
+              }
+            >
+              Apply
+            </Link>
             {/* <Link href="/#contact">Contact</Link> */}
-            <Link href="/TwitchStreams">Twitch Streams</Link>
+            <Link
+              href="/TwitchStreams"
+              className={
+                pathName === "/TwitchStreams"
+                  ? "text-blue-300 underline"
+                  : "hover:underline"
+              }
+            >
+              Twitch Streams
+            </Link>
           </div>
         </div>
       </nav>

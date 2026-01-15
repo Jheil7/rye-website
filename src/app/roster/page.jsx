@@ -3,11 +3,11 @@ import Card from "../_components/Card";
 import { CLASS_BY_ID } from "src/classes";
 import { warcraftlogsFetch } from "../../lib/warcraftlogs api/warcraftlogsfetch";
 import { server } from "typescript";
+import { fetchToken } from "../../blizzard api/blizzardfetch";
+import { getAPI } from "../../blizzard api/blizzardfetch";
 
 const zoneID = 44; //ZONE ID FOR THE CURRENT RAID, 44=MANAFORGE.
 
-const BNET_ID = process.env.BLIZZARD_CLIENT_ID;
-const BNET_SECRET = process.env.BLIZZARD_CLIENT_SECRET;
 const warcraftlogsURL = "https://www.warcraftlogs.com/character/us";
 const guildAPI =
   "https://us.api.blizzard.com/data/wow/guild/malganis/raise-your-eyes/roster?namespace=profile-us&locale=en_US";
@@ -102,23 +102,6 @@ function getParseColor(avg) {
   return "text-gray-400";
 }
 
-//base blizzard API fetch function
-async function getAPI(apiURL) {
-  const accessToken = await fetchToken();
-  const myHeaders2 = new Headers();
-  myHeaders2.append("Authorization", `Bearer ${accessToken}`);
-
-  const requestOptions2 = {
-    method: "GET",
-    headers: myHeaders2,
-    redirect: "follow",
-  };
-
-  const apiFetchPromise = await fetch(apiURL, requestOptions2);
-  const apiFetchJSON = await apiFetchPromise.json();
-  return apiFetchJSON;
-}
-
 //pull guild from blizzard API function
 async function showRoster() {
   const rosterFetch = await getAPI(guildAPI);
@@ -172,40 +155,4 @@ async function fetchBestParseAvg(characterName, serverSlug, currentRaid) {
     dpsAvg: dpsObj?.bestPerformanceAverage ?? null,
     hpsAvg: hpsObj?.bestPerformanceAverage ?? null,
   };
-}
-
-//Oauth token request
-async function fetchToken() {
-  const myHeaders = new Headers();
-  const credentials = Buffer.from(`${BNET_ID}:${BNET_SECRET}`).toString(
-    "base64",
-  );
-  myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-  myHeaders.append("Authorization", `Basic ${credentials}`);
-
-  const urlencoded = new URLSearchParams();
-  urlencoded.append("grant_type", "client_credentials");
-
-  const requestOptions = {
-    method: "POST",
-    headers: myHeaders,
-    body: urlencoded,
-    redirect: "follow",
-  };
-
-  const response = await fetch(
-    "https://oauth.battle.net/token",
-    requestOptions,
-  );
-
-  if (!response.ok) {
-    const text = await response.text();
-    console.log("Token error body:", text);
-    throw new Error(`Token request failed: ${response.status}`);
-  }
-  const json = await response.json();
-  console.log("Token keys:", Object.keys(json));
-  const accessToken = json.access_token;
-
-  return accessToken;
 }
