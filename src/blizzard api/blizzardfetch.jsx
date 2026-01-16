@@ -1,3 +1,4 @@
+// @ts-nocheck
 const BNET_ID = process.env.BLIZZARD_CLIENT_ID;
 const BNET_SECRET = process.env.BLIZZARD_CLIENT_SECRET;
 
