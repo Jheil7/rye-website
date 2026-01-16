@@ -23,23 +23,39 @@ export default async function App() {
   );
   const enrichedRoster = await Promise.all(
     sortedRoster.map(async (m) => {
-      const bestPerfAvg = await fetchBestParseAvg(
-        m.character.name,
-        m.character.realm.slug,
-        zoneID,
-      ).catch(() => ({ dpsAvg: null, hpsAvg: null }));
-      return { ...m, ...bestPerfAvg };
+      const [wcl, blizz] = await Promise.all([
+        fetchBestParseAvg(
+          m.character.name,
+          m.character.realm.slug,
+          zoneID,
+        ).catch(() => ({ dpsAvg: null, hpsAvg: null })),
+
+        getCharacter(m.character.realm.slug, m.character.name.toLowerCase())
+          .then((c) => ({
+            average_item_level: c?.average_item_level ?? null,
+            active_spec: c?.active_spec?.name ?? null,
+          }))
+          .catch(() => ({ average_item_level: null, active_spec: null })),
+      ]);
+
+      return { ...m, ...wcl, ...blizz };
     }),
   );
+
+  console.log(enrichedRoster);
   return (
     <div className="mx-auto mt-6 max-w-6xl space-y-6 px-6">
       <Card>
         <h3 className="text-xl font-bold">Mythic Roster ({rosterCount})</h3>
-        <li className="grid grid-cols-[30px_0.25fr_0.25fr_0.25fr_160px] items-center gap-3 py-2 text-lg">
+        <li className="grid grid-cols-[30px_0.15fr_0.25fr_0.1fr_0.2fr_160px] items-center gap-4 py-2 text-lg">
           <div>Name</div>
           <div></div>
-          <div>Class</div>
-          <div>Best Parse Avg. (DPS/Heal)</div>
+          <div>Current Spec/Class</div>
+          <div>Ilvl</div>
+          <div className="leading-tight">
+            <span className="block">Best Parse Avg.</span>
+            <span className="block">(DPS/Heal)</span>
+          </div>
           <div>Warcraftlogs URL</div>
         </li>
         <ul>
@@ -47,24 +63,31 @@ export default async function App() {
             const classId = member.character.playable_class.id;
             const wowClass = CLASS_BY_ID[classId];
             const logsURL = `${warcraftlogsURL}/${member.character.realm.slug}/${encodeURIComponent(member.character.name)}`;
-            const playerURL = `${characterAPIPrefix}${member.character.realm.slug}/${encodeURIComponent(member.character.name.toLowerCase())}${characterAPISuffix}`;
 
             return (
               <li
-                className="grid grid-cols-[30px_0.25fr_0.25fr_0.25fr_160px] items-center gap-3 py-2"
+                className="grid grid-cols-[30px_0.15fr_0.25fr_0.1fr_0.2fr_160px] items-center gap-4 py-2"
                 key={member.character.id}
               >
+                {/* icon */}
                 <img
                   src={wowClass.icon}
                   alt={wowClass.name}
                   className="h-8 w-8 rounded"
                 />
-                <span>{member.character.name}</span>
+                {/* name */}
+                <span className="text-lg">{member.character.name}</span>
 
-                <span className="text-sm opacity-70">
-                  {" "}
+                {/* class/spec */}
+                <span className="text-lg opacity-70">
+                  {member.active_spec.en_US ?? "—"}{" "}
                   {wowClass ? wowClass.name : `Class ${classId}`}{" "}
                 </span>
+                {/* Ilvl */}
+                <span className="text-lg">
+                  {member.average_item_level ?? "—"}
+                </span>
+                {/* avg parse */}
                 <span className="inline-flex items-center gap-1 text-lg">
                   <span className={getParseColor(member.dpsAvg)}>
                     {member.dpsAvg?.toFixed(1) ?? "—"}
@@ -74,16 +97,15 @@ export default async function App() {
                     {member.hpsAvg?.toFixed(1) ?? "—"}
                   </span>
                 </span>
+                {/* warcraftlogs URL */}
                 <a
                   href={logsURL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="break-all text-blue-400 hover:underline"
                 >
-                  Link
+                  WCL/{member.character.name}
                 </a>
-
-                {/* <span>{characterData.active_spec?.name ?? "Unknown Spec"}</span> */}
               </li>
             );
           })}
@@ -113,15 +135,13 @@ async function showRoster() {
   return filteredMembers;
 }
 
-//incomplete getcharcter pull from blizzard
-async function getCharacter(characterURL) {
-  const characterFetch = await getAPI(characterURL);
-  console.log(characterFetch);
+//character Blizzard API pull
+async function getCharacter(realm, name) {
+  const playerURL = `${characterAPIPrefix}${realm}/${encodeURIComponent(name)}${characterAPISuffix}`;
+  const characterFetch = await getAPI(playerURL);
   return characterFetch;
-  // https://us.api.blizzard.com/profile/wow/character/area-52/Monkurial?namespace=profile-us
-  // https://us.api.blizzard.com/profile/wow/character/area-52/monkurial?namespace=profile-us
-  // /profile/wow/character/{realmSlug}/{characterName}?namespace=profile-us&locale=en_US
 }
+// /profile/wow/character/{realmSlug}/{characterName}?namespace=profile-us&locale=en_US
 
 function parseZR(zr) {
   return typeof zr === "string" ? JSON.parse(zr) : zr;
