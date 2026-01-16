@@ -9,7 +9,7 @@ export default function Navbar() {
   return (
     <>
       <nav>
-        <div className="flex justify-evenly gap-8 bg-gray-600 p-3 text-blue-50">
+        <div className="flex justify-evenly gap-8 bg-gray-700 p-3 text-white">
           <div className="flex items-center">
             <img src="logo.png" className="hidden sm:block" />
             <span className="p-3.5 text-2xl font-bold md:text-5xl">

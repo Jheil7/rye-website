@@ -7,7 +7,7 @@ import { FaUser } from "react-icons/fa";
 import Card from "./_components/Card";
 import { warcraftlogsFetch } from "../lib/warcraftlogs api/warcraftlogsfetch";
 
-const rolesNeeded = ["mage", "rogue", "deathknight"];
+const rolesNeeded = ["mage", "rogue", "deathknight", "druid"];
 const warcraftlogspage =
   "https://www.warcraftlogs.com/guild/us/malganis/raise%20your%20eyes";
 const raideriopage = "https://raider.io/guilds/us/malganis/Raise%20Your%20Eyes";
@@ -17,26 +17,39 @@ export default function Home() {
     <div className="mx-auto mt-6 max-w-6xl space-y-6 px-6">
       <AboutSection />
 
-      <div className="grid gap-3 md:grid-cols-2">
+      <div className="grid items-stretch gap-3 md:grid-cols-[0.33fr_0.66fr] md:grid-rows-2">
         <RaidSchedule />
+
+        <img
+          src="CE.png"
+          alt="Cutting Edge Photo"
+          className="h-full w-full rounded-lg object-cover md:row-span-2"
+        />
         <LinksSection />
       </div>
-
       <RaidProgress />
+      <div className="grid items-stretch gap-3 md:grid-cols-[0.66fr_0.33fr]">
+        <img
+          src="Dimensius.png"
+          alt="Dimensius"
+          className="h-full w-full rounded-lg object-cover"
+        />
 
-      <RolesSection />
+        <RolesSection />
+      </div>
+
       <Contact />
     </div>
   );
 }
-//className="grid gap-6 md:grid-cols-2"
+// <div className="grid items-stretch gap-3 md:grid-cols-2 md:grid-rows-[1fr_auto]">
 
 function AboutSection() {
   return (
     <div>
       <Card>
         <div>
-          <h2 className="text-center text-xl font-semibold">About Us</h2>
+          <h2 className="text-center text-2xl font-bold">About Us</h2>
           <h3 className="text-md">
             <p>
               {`Welcome to Raise Your Eyes, a Cutting Edge raiding guild on
@@ -70,7 +83,7 @@ function RaidSchedule() {
     <div>
       <Card>
         <div>
-          <h2 className="text-xl font-semibold">Raid Schedule</h2>
+          <h2 className="mb-1 text-2xl font-bold">Raid Schedule</h2>
           <h3 className="text-md">Tuesday 9:00pm-12:00am EST</h3>
           <h3 className="text-md">Thursday 9:00pm-12:00am EST</h3>
           {/* <h3 className="text-lg">
@@ -86,7 +99,7 @@ function RolesSection() {
   return (
     <div>
       <Card>
-        <h2 className="text-xl font-semibold">Roles Needed</h2>
+        <h2 className="text-2xl font-bold">Roles Needed</h2>
         <div className="mt-2 space-y-3">
           {rolesNeeded.map((role) => {
             const cls = CLASSES[role];
@@ -99,6 +112,10 @@ function RolesSection() {
             );
           })}
         </div>
+
+        <div className="mt-4">
+          All exceptional dps and healers will be considered
+        </div>
       </Card>
     </div>
   );
@@ -107,7 +124,7 @@ function RolesSection() {
 function Contact() {
   return (
     <Card id="contact">
-      <h2 className="text-xl font-semibold">Contact</h2>
+      <h2 className="text-2xl font-bold">Contact</h2>
       <div className="mt-3 flex items-center gap-2">
         <FaDiscord size={24} />
         <span>Discord: dwarf1</span>
@@ -153,7 +170,7 @@ async function RaidProgress() {
 
   return (
     <Card>
-      <h2 className="text-center text-xl font-semibold">Raid Progress</h2>
+      <h2 className="mb-1 text-center text-2xl font-bold">Raid Progress</h2>
       <div className="grid gap-3 md:grid-cols-3">
         <div>
           <h2 className="font-semibold">Current guild rank (world)</h2>
@@ -175,7 +192,7 @@ async function RaidProgress() {
 function LinksSection() {
   return (
     <Card>
-      <h2 className="text-xl font-semibold">Links</h2>
+      <h2 className="mb-1 text-2xl font-bold">Links</h2>
       <div>
         <a
           href={warcraftlogspage}

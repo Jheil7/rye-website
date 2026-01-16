@@ -42,7 +42,6 @@ export default async function App() {
     }),
   );
 
-  console.log(enrichedRoster);
   return (
     <div className="mx-auto mt-6 max-w-6xl space-y-6 px-6">
       <Card>
