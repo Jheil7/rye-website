@@ -123,21 +123,23 @@ function RolesSection() {
 
 function Contact() {
   return (
-    <Card id="contact">
-      <h2 className="text-2xl font-bold">Contact</h2>
-      <div className="mt-3 flex items-center gap-2">
-        <FaDiscord size={24} />
-        <span>Discord: dwarf1</span>
-      </div>
-      <div className="mt-3 flex items-center gap-2">
-        <FaBattleNet size={24} />
-        <span>BattleNet:Matt#15352</span>
-      </div>
-      <div className="mt-3 flex items-center gap-2">
-        <FaUser size={24} />
-        <span>{"Ytu-Mal'Ganis"}</span>
-      </div>
-    </Card>
+    <div className="mb-2">
+      <Card id="contact">
+        <h2 className="text-2xl font-bold">Contact</h2>
+        <div className="mt-3 flex items-center gap-2">
+          <FaDiscord size={24} />
+          <span>Discord: dwarf1</span>
+        </div>
+        <div className="mt-3 flex items-center gap-2">
+          <FaBattleNet size={24} />
+          <span>BattleNet:Matt#15352</span>
+        </div>
+        <div className="mt-3 flex items-center gap-2">
+          <FaUser size={24} />
+          <span>{"Ytu-Mal'Ganis"}</span>
+        </div>
+      </Card>
+    </div>
   );
 }
 
