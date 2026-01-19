@@ -82,7 +82,7 @@ export default function ApplyPage() {
 
           <div className={row}>
             <label className={label} htmlFor="logs">
-              Warcraft Logs Link
+              Warcraftlogs Link
             </label>
             <input
               id="logs"

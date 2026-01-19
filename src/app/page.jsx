@@ -173,18 +173,18 @@ async function RaidProgress() {
   return (
     <Card>
       <h2 className="mb-1 text-center text-2xl font-bold">Raid Progress</h2>
-      <div className="grid gap-3 md:grid-cols-3">
+      <div className="grid gap-3 text-center md:grid-cols-3">
         <div>
           <h2 className="font-semibold">Current guild rank (world)</h2>
-          <h3> {worldRank}</h3>
+          <h3 className="text-xl font-bold"> {worldRank}</h3>
         </div>
         <div>
           <h2 className="font-semibold">Current guild rank (server)</h2>
-          <h3> {serverRank}</h3>
+          <h3 className="text-xl font-bold"> {serverRank}</h3>
         </div>
         <div>
           <h2 className="font-semibold">Current boss progress</h2>
-          <h3>(working on API call)</h3>
+          <h3 className="text-xl font-bold">(working on API call)</h3>
         </div>
       </div>
     </Card>
