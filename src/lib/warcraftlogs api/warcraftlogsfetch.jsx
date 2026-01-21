@@ -1,9 +1,12 @@
 // @ts-nocheck
+import { getWclAccessToken } from "~/server/wclToken";
+
 const WARCRAFTLOGS_ID = process.env.WARCRAFTLOGS_CLIENT_ID;
 const WARCRAFTLOGS_SECRET = process.env.WARCRAFTLOGS_CLIENT_SECRET;
 
 export async function warcraftlogsFetch(query) {
-  const accessToken = await fetchTokenWCL();
+  const accessToken = await getWclAccessToken(fetchTokenWCL);
+
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
   myHeaders.append("Authorization", `Bearer ${accessToken}`);
@@ -30,7 +33,7 @@ export async function warcraftlogsFetch(query) {
   return apiFetchJSON;
 }
 
-async function fetchTokenWCL() {
+export async function fetchTokenWCL() {
   const myHeaders = new Headers();
   const credentials = Buffer.from(
     `${WARCRAFTLOGS_ID}:${WARCRAFTLOGS_SECRET}`,
@@ -60,7 +63,8 @@ async function fetchTokenWCL() {
   }
   const json = await response.json();
   console.log("Token keys:", Object.keys(json));
-  const accessToken = json.access_token;
-
-  return accessToken;
+  return {
+    accessToken: json.access_token,
+    expiresIn: json.expires_in, // seconds
+  };
 }

@@ -1,9 +1,10 @@
 // @ts-nocheck
+import { getBlizzardAccessToken } from "~/server/blizzardToken";
 const BNET_ID = process.env.BLIZZARD_CLIENT_ID;
 const BNET_SECRET = process.env.BLIZZARD_CLIENT_SECRET;
 
 //Oauth token request
-export async function fetchToken() {
+export async function fetchBlizzardToken() {
   const myHeaders = new Headers();
   const credentials = Buffer.from(`${BNET_ID}:${BNET_SECRET}`).toString(
     "base64",
@@ -35,12 +36,16 @@ export async function fetchToken() {
   console.log("Token keys:", Object.keys(json));
   const accessToken = json.access_token;
 
-  return accessToken;
+  return {
+    accessToken: json.access_token,
+    expiresIn: json.expires_in, // seconds
+  };
 }
 
 //base blizzard API fetch function
 export async function getAPI(apiURL) {
-  const accessToken = await fetchToken();
+  const accessToken = await getBlizzardAccessToken();
+
   const myHeaders2 = new Headers();
   myHeaders2.append("Authorization", `Bearer ${accessToken}`);
 

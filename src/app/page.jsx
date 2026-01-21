@@ -17,7 +17,7 @@ export default function Home() {
     <div className="mx-auto mt-6 max-w-6xl space-y-6 px-6">
       <AboutSection />
 
-      <div className="grid items-stretch gap-3 md:grid-cols-[0.33fr_0.66fr] md:grid-rows-2">
+      <div className="grid items-stretch gap-3 md:grid-cols-[1fr_2fr] md:grid-rows-2">
         <RaidSchedule />
 
         <img
@@ -28,7 +28,7 @@ export default function Home() {
         <LinksSection />
       </div>
       <RaidProgress />
-      <div className="grid items-stretch gap-3 md:grid-cols-[0.66fr_0.33fr]">
+      <div className="grid items-stretch gap-3 md:grid-cols-[2fr_1fr]">
         <img
           src="Dimensius.png"
           alt="Dimensius"
@@ -37,8 +37,9 @@ export default function Home() {
 
         <RolesSection />
       </div>
-
-      <Contact />
+      <div>
+        <Contact />
+      </div>
     </div>
   );
 }
@@ -123,20 +124,42 @@ function RolesSection() {
 
 function Contact() {
   return (
-    <div className="mb-2">
+    <div className="mb-2 max-w-xl">
       <Card id="contact">
-        <h2 className="text-2xl font-bold">Contact</h2>
-        <div className="mt-3 flex items-center gap-2">
-          <FaDiscord size={24} />
-          <span>Discord: dwarf1</span>
-        </div>
-        <div className="mt-3 flex items-center gap-2">
-          <FaBattleNet size={24} />
-          <span>BattleNet:Matt#15352</span>
-        </div>
-        <div className="mt-3 flex items-center gap-2">
-          <FaUser size={24} />
-          <span>{"Ytu-Mal'Ganis"}</span>
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div>
+            <h2 className="text-2xl font-bold">Contact</h2>
+            <p className="mt-1 text-sm opacity-70">Reach out to our GM</p>
+
+            <div className="mt-4 space-y-3">
+              <div className="flex items-center gap-3">
+                <FaDiscord size={22} className="opacity-80" />
+                <span>
+                  <span className="opacity-70">Discord:</span> dwarf1
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <FaBattleNet size={22} className="opacity-80" />
+                <span>
+                  <span className="opacity-70">Battle.net:</span> Matt#15352
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <FaUser size={22} className="opacity-80" />
+                <span>
+                  <span className="opacity-70">Main:</span> Ytu-Mal&apos;Ganis
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <img
+            src="Matt.png"
+            alt="picture of GM"
+            className="h-48 w-48 rounded-lg object-cover ring-1 ring-white/10"
+          />
         </div>
       </Card>
     </div>
