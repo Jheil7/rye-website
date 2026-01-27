@@ -6,8 +6,10 @@ export default async function Home() {
       <Card>
         <div className="aspect-video w-full">
           <iframe
-            src="https://player.twitch.tv/?channel=imaqtpie&autoplay=false&parent=raise-your-eyes.vercel.app&parent=localhost"
+            loading="lazy"
+            src="https://www.youtube.com/embed/RYNW3BaOmYQ"
             className="h-full w-full"
+            allow="encrypted-media; picture-in-picture"
             allowFullScreen
           />
         </div>

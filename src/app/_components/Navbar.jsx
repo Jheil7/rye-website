@@ -57,6 +57,16 @@ export default function Navbar() {
             >
               Twitch Streams
             </Link>
+            <Link
+              href="/Clips"
+              className={
+                pathName === "/Clips"
+                  ? "text-blue-300 underline"
+                  : "hover:underline"
+              }
+            >
+              RYE Clips
+            </Link>
           </div>
         </div>
       </nav>
