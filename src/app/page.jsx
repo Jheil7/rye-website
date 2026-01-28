@@ -23,7 +23,7 @@ export default function Home() {
         <img
           src="CE.png"
           alt="Cutting Edge Photo"
-          className="h-full w-full rounded-lg object-cover md:row-span-2"
+          className="h-full w-full rounded-lg border border-slate-400 object-cover md:row-span-2"
         />
         <LinksSection />
       </div>
@@ -32,7 +32,7 @@ export default function Home() {
         <img
           src="Dimensius.png"
           alt="Dimensius"
-          className="h-full w-full rounded-lg object-cover"
+          className="h-full w-full rounded-lg border border-slate-400 object-cover"
         />
 
         <RolesSection />
@@ -158,7 +158,7 @@ function Contact() {
           <img
             src="Matt.png"
             alt="picture of GM"
-            className="h-48 w-48 rounded-lg object-cover ring-1 ring-white/10"
+            className="h-48 w-48 rounded-lg"
           />
         </div>
       </Card>
