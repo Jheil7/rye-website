@@ -5,14 +5,20 @@ import { warcraftlogsFetch } from "../../lib/warcraftlogs api/warcraftlogsfetch"
 import { server } from "typescript";
 import { fetchToken } from "../../blizzard api/blizzardfetch";
 import { getAPI } from "../../blizzard api/blizzardfetch";
+import { fetchRaiderIO } from "../raiderio/raideriofetch";
 
 const zoneID = 44; //ZONE ID FOR THE CURRENT RAID, 44=MANAFORGE.
 
+//API prefixes/suffixes
 const warcraftlogsURL = "https://www.warcraftlogs.com/character/us";
 const guildAPI =
   "https://us.api.blizzard.com/data/wow/guild/malganis/raise-your-eyes/roster?namespace=profile-us&locale=en_US";
 const characterAPIPrefix = "https://us.api.blizzard.com/profile/wow/character/";
 const characterAPISuffix = "?namespace=profile-us";
+
+//className for roster
+const columnStructure =
+  "grid grid-cols-[30px_0.15fr_0.25fr_0.1fr_0.2fr_0.2fr_160px] items-center gap-4 py-2 text-lg";
 
 export default async function App() {
   const roster = await showRoster();
@@ -23,7 +29,7 @@ export default async function App() {
   );
   const enrichedRoster = await Promise.all(
     sortedRoster.map(async (m) => {
-      const [wcl, blizz] = await Promise.all([
+      const [wcl, blizz, raiderIO] = await Promise.all([
         fetchBestParseAvg(
           m.character.name,
           m.character.realm.slug,
@@ -36,9 +42,13 @@ export default async function App() {
             active_spec: c?.active_spec?.name ?? null,
           }))
           .catch(() => ({ average_item_level: null, active_spec: null })),
+
+        fetchRaiderIOScore(m.character.name, m.character.realm.slug).catch(
+          () => ({ raiderIOScore: null }),
+        ),
       ]);
 
-      return { ...m, ...wcl, ...blizz };
+      return { ...m, ...wcl, ...blizz, ...raiderIO };
     }),
   );
 
@@ -46,7 +56,7 @@ export default async function App() {
     <div className="mx-auto mt-6 max-w-6xl space-y-6 px-6">
       <Card>
         <h3 className="text-xl font-bold">Mythic Roster ({rosterCount})</h3>
-        <li className="grid grid-cols-[30px_0.15fr_0.25fr_0.1fr_0.2fr_160px] items-center gap-4 py-2 text-lg">
+        <li className={columnStructure}>
           <div>Name</div>
           <div></div>
           <div>Current Spec/Class</div>
@@ -55,6 +65,7 @@ export default async function App() {
             <span className="block">Best Parse Avg.</span>
             <span className="block">(DPS/Heal)</span>
           </div>
+          <div>M+ Score</div>
           <div>Warcraftlogs URL</div>
         </li>
         <ul>
@@ -64,10 +75,7 @@ export default async function App() {
             const logsURL = `${warcraftlogsURL}/${member.character.realm.slug}/${encodeURIComponent(member.character.name)}`;
 
             return (
-              <li
-                className="grid grid-cols-[30px_0.15fr_0.25fr_0.1fr_0.2fr_160px] items-center gap-4 py-2"
-                key={member.character.id}
-              >
+              <li className={columnStructure} key={member.character.id}>
                 {/* icon */}
                 <img
                   src={wowClass.icon}
@@ -96,6 +104,8 @@ export default async function App() {
                     {member.hpsAvg?.toFixed(1) ?? "—"}
                   </span>
                 </span>
+                {/* raiderio score */}
+                <span className="text-lg">{member.raiderIOScore ?? "—"}</span>
                 {/* warcraftlogs URL */}
                 <a
                   href={logsURL}
@@ -174,4 +184,13 @@ async function fetchBestParseAvg(characterName, serverSlug, currentRaid) {
     dpsAvg: dpsObj?.bestPerformanceAverage ?? null,
     hpsAvg: hpsObj?.bestPerformanceAverage ?? null,
   };
+}
+
+async function fetchRaiderIOScore(characterName, serverSlug) {
+  const baseURL = `https://raider.io/api/v1/characters/profile?access_key=${process.env.RAIDERIO_API_KEY}&region=us&realm=${encodeURIComponent(serverSlug)}&name=${encodeURIComponent(characterName)}&fields=mythic_plus_scores_by_season%3Acurrent`;
+  const fetchRaiderIOScore = await fetchRaiderIO(baseURL);
+  const raiderIOScore =
+    fetchRaiderIOScore.mythic_plus_scores_by_season?.[0]?.scores?.all ?? null;
+  console.log(raiderIOScore);
+  return { raiderIOScore };
 }

@@ -8,7 +8,7 @@ export async function getBlizzardAccessToken() {
   const cached = await redis.get(TOKEN_KEY);
 
   if (cached?.token && cached?.expiresAt > Date.now()) {
-    console.log("cached blizzard token?", !!cached);
+    // console.log("cached blizzard token?", !!cached);
     return cached.token;
   }
 

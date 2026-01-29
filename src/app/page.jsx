@@ -6,6 +6,7 @@ import { FaBattleNet } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
 import Card from "./_components/Card";
 import { warcraftlogsFetch } from "../lib/warcraftlogs api/warcraftlogsfetch";
+import { fetchRaiderIO } from "./raiderio/raideriofetch";
 
 const rolesNeeded = ["mage", "rogue", "deathknight", "druid"];
 const warcraftlogspage =
@@ -183,7 +184,11 @@ async function RaidProgress() {
           }
       }
   }`;
-
+  const testFetch = await fetchRaiderIO(
+    `https://raider.io/api/v1/characters/profile?access_key=${process.env.RAIDERIO_API_KEY}&region=us&realm=area-52&name=Monkurial&fields=mythic_plus_scores_by_season%3Acurrent`,
+  );
+  const score =
+    testFetch.mythic_plus_scores_by_season?.[0]?.scores?.all ?? null;
   const guildRankFetch = await warcraftlogsFetch(worldRankQuery);
   const worldRank =
     guildRankFetch?.data?.guildData?.guild?.zoneRanking?.progress?.worldRank
@@ -207,7 +212,7 @@ async function RaidProgress() {
         </div>
         <div>
           <h2 className="font-semibold">Current boss progress</h2>
-          <h3 className="text-xl font-bold">(working on API call)</h3>
+          <h3 className="text-xl font-bold">{score}</h3>
         </div>
       </div>
     </Card>

@@ -8,7 +8,7 @@ export async function getWclAccessToken(fetchTokenWCL) {
   const cached = await redis.get(TOKEN_KEY);
 
   if (cached?.token && cached?.expiresAt > Date.now()) {
-    console.log("cached wcl token?", !!cached);
+    // console.log("cached wcl token?", !!cached);
     return cached.token;
   }
 
