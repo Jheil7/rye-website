@@ -67,6 +67,16 @@ export default function Navbar() {
             >
               RYE Clips
             </Link>
+            {/* <Link
+              href="/about"
+              className={
+                pathName === "/about"
+                  ? "text-blue-300 underline"
+                  : "hover:underline"
+              }
+            >
+              Test area
+            </Link> */}
           </div>
         </div>
       </nav>

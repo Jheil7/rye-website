@@ -184,11 +184,7 @@ async function RaidProgress() {
           }
       }
   }`;
-  const testFetch = await fetchRaiderIO(
-    `https://raider.io/api/v1/characters/profile?access_key=${process.env.RAIDERIO_API_KEY}&region=us&realm=area-52&name=Monkurial&fields=mythic_plus_scores_by_season%3Acurrent`,
-  );
-  const score =
-    testFetch.mythic_plus_scores_by_season?.[0]?.scores?.all ?? null;
+
   const guildRankFetch = await warcraftlogsFetch(worldRankQuery);
   const worldRank =
     guildRankFetch?.data?.guildData?.guild?.zoneRanking?.progress?.worldRank
@@ -212,7 +208,7 @@ async function RaidProgress() {
         </div>
         <div>
           <h2 className="font-semibold">Current boss progress</h2>
-          <h3 className="text-xl font-bold">{score}</h3>
+          <h3 className="text-xl font-bold">Working on API call</h3>
         </div>
       </div>
     </Card>
