@@ -8,7 +8,12 @@ import Card from "./_components/Card";
 import { warcraftlogsFetch } from "../lib/warcraftlogs api/warcraftlogsfetch";
 import { fetchRaiderIO } from "./raiderio/raideriofetch";
 
-const rolesNeeded = ["mage", "rogue", "deathknight", "druid"];
+const rolesNeeded = [
+  { classKey: "mage" },
+  { classKey: "rogue" },
+  { classKey: "deathknight", specKey: "blood" },
+  { classKey: "druid", specKey: "restoration" },
+];
 const warcraftlogspage =
   "https://www.warcraftlogs.com/guild/us/malganis/raise%20your%20eyes";
 const raideriopage = "https://raider.io/guilds/us/malganis/Raise%20Your%20Eyes";
@@ -103,13 +108,21 @@ function RolesSection() {
       <Card>
         <h2 className="text-2xl font-bold">Roles Needed</h2>
         <div className="mt-2 space-y-3">
-          {rolesNeeded.map((role) => {
-            const cls = CLASSES[role];
+          {rolesNeeded.map(({ classKey, specKey }) => {
+            const cls = CLASSES[classKey];
+            const spec = specKey ? cls.specs?.[specKey] : null;
 
             return (
-              <div key={role} className="flex items-center gap-3">
-                <img src={cls.icon} alt={cls.name} className="h-8 w-8" />
-                <span>{cls.name}</span>
+              <div
+                key={`${classKey}:${specKey ?? "class"}`}
+                className="flex items-center gap-3"
+              >
+                <img
+                  src={spec ? spec.icon : cls.icon}
+                  alt={spec ? `${spec.name} ${cls.name}` : cls.name}
+                  className="h-8 w-8"
+                />
+                <span>{spec ? `${spec.name} ${cls.name}` : cls.name}</span>
               </div>
             );
           })}
