@@ -1,13 +1,11 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-import Card from "src/app/_components/Card.jsx";
-import YoutubeEmbed from "src/app/_components/YoutubeEmbed.jsx";
+import Card from "src/app/_components/Card";
+import YoutubeEmbed from "src/app/_components/YoutubeEmbed";
 
-export default async function Home() {
+export default function Home() {
   return (
     <div className="mx-auto mt-6 mb-10 max-w-6xl space-y-6 px-6">
       {/* Mugzee Moment */}
-      <Card className="border border-white">
+      <Card>
         <h2 className="mb-3 flex justify-center text-2xl font-bold">
           {"Mug'Zee Compilation"}
         </h2>

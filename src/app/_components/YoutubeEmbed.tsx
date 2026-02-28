@@ -1,10 +1,12 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-
 "use client";
 import { useState } from "react";
 
-export default function YouTubeEmbed({ videoId, start = 0 }) {
+type YoutubeProps = {
+  videoId: string;
+  start?: number;
+};
+
+export default function YouTubeEmbed({ videoId, start = 0 }: YoutubeProps) {
   const [playing, setPlaying] = useState(false);
 
   const embedSrc = `https://www.youtube.com/embed/${videoId}?start=${start}&playsinline=1`;

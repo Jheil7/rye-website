@@ -1,4 +1,4 @@
-import Card from "src/app/_components/Card.jsx";
+import Card from "src/app/_components/Card";
 
 export default async function Home() {
   return (
