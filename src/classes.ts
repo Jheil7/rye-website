@@ -1,6 +1,19 @@
-// @ts-nocheck
+export type Role = "tank" | "healer" | "dps";
 
-export const CLASSES = {
+export type Spec = {
+  name: string;
+  role: Role;
+  icon: string;
+};
+
+export type WowClass = {
+  id: number;
+  name: string;
+  icon: string;
+  specs: Record<string, Spec>;
+};
+
+export const CLASSES: Record<string, WowClass> = {
   warrior: {
     id: 1,
     name: "Warrior",
@@ -294,14 +307,16 @@ export const CLASSES = {
       },
       augmentation: {
         name: "Augmentation",
-        role: "support",
+        role: "dps",
         icon: "https://wow.zamimg.com/images/wow/icons/large/ability_evoker_augmentation.jpg",
       },
     },
   },
 };
 
-export const CLASS_BY_ID = Object.values(CLASSES).reduce((acc, cls) => {
+export const CLASS_BY_ID = Object.values(CLASSES).reduce<
+  Record<number, WowClass>
+>((acc, cls) => {
   acc[cls.id] = cls;
   return acc;
 }, {});

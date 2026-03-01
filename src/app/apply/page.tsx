@@ -1,29 +1,43 @@
-// @ts-nocheck
 "use client";
 
 import { useState } from "react";
+import type { FormEvent } from "react";
 import Card from "../_components/Card";
+
+type SubmitStatus = "idle" | "ok" | "err";
+
+type ApplyBody = {
+  name: string;
+  realm: string;
+  logs: string;
+  notes: string;
+};
+
+function getFormValue(form: FormData, key: keyof ApplyBody): string {
+  const value = form.get(key);
+  return typeof value === "string" ? value : "";
+}
 
 export default function ApplyPage() {
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState("idle"); // "idle" | "ok" | "err"
+  const [status, setStatus] = useState<SubmitStatus>("idle");
   const [error, setError] = useState("");
 
-  async function onSubmit(e) {
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    const formEl = e.currentTarget; // capture it right away
+    const formEl = e.currentTarget;
     const form = new FormData(formEl);
 
     setLoading(true);
     setStatus("idle");
     setError("");
 
-    const body = {
-      name: form.get("name"),
-      realm: form.get("realm"),
-      logs: form.get("logs"),
-      notes: form.get("notes"),
+    const body: ApplyBody = {
+      name: getFormValue(form, "name"),
+      realm: getFormValue(form, "realm"),
+      logs: getFormValue(form, "logs"),
+      notes: getFormValue(form, "notes"),
     };
 
     const res = await fetch("/api/apply", {
@@ -36,11 +50,18 @@ export default function ApplyPage() {
 
     if (res.ok) {
       setStatus("ok");
-      formEl.reset(); // use captured reference
+      formEl.reset();
     } else {
       setStatus("err");
-      const j = await res.json().catch(() => ({}));
-      setError(j?.error || "Something went wrong.");
+      const j: unknown = await res.json().catch(() => ({}));
+      const message =
+        typeof j === "object" &&
+        j !== null &&
+        "error" in j &&
+        typeof j.error === "string"
+          ? j.error
+          : "Something went wrong.";
+      setError(message);
     }
   }
 
