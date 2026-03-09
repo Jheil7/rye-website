@@ -21,6 +21,26 @@ const raideriopage = "https://raider.io/guilds/us/malganis/Raise%20Your%20Eyes";
 
 const underlineClassName = "mb-2 border-b border-slate-600 pb-1";
 
+const usefulResources = [
+  {
+    name: "Mythic Trap",
+    url: "https://www.mythictrap.com/en",
+    description: "Boss mechanics and raid guides",
+  },
+
+  {
+    name: "Archon",
+    url: "https://www.archon.gg/wow",
+    description: "Meta class builds and statistics",
+  },
+
+  {
+    name: "Larias' Guide",
+    url: "https://docs.google.com/document/d/e/2PACX-1vTGkZ2Cjr0jlv90XqW9vy9VXsVucd-yMCgHdyCvX_kQfOrexNDAC7Lf3LifuhqxrcWqJ0W3zIhvK3ii/pub",
+    description: "Guide to starting the season and what to do with crests",
+  },
+];
+
 export default function Home() {
   return (
     <div className="mx-auto mt-6 max-w-6xl space-y-6 px-6">
@@ -46,8 +66,9 @@ export default function Home() {
 
         <RolesSection />
       </div>
-      <div>
+      <div className="grid items-stretch gap-3 md:grid-cols-[1fr_1fr]">
         <Contact />
+        <UsefulResources />
       </div>
     </div>
   );
@@ -140,52 +161,6 @@ function RolesSection() {
         <div className="mt-4">
           Currently accepting all experienced raiders. The above roles are
           currently our highest priority.
-        </div>
-      </Card>
-    </div>
-  );
-}
-
-function Contact() {
-  return (
-    <div className="mb-2 max-w-xl">
-      <Card id="contact">
-        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-          <div>
-            <div className={underlineClassName}>
-              <h2 className="text-2xl font-bold">Contact</h2>
-            </div>
-            <p className="mt-1 text-sm opacity-70">Reach out to our GM</p>
-
-            <div className="mt-4 space-y-3">
-              <div className="flex items-center gap-3">
-                <FaDiscord size={22} className="opacity-80" />
-                <span>
-                  <span className="opacity-70">Discord:</span> dwarf1
-                </span>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <FaBattleNet size={22} className="opacity-80" />
-                <span>
-                  <span className="opacity-70">Battle.net:</span> Matt#15352
-                </span>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <FaUser size={22} className="opacity-80" />
-                <span>
-                  <span className="opacity-70">Main:</span> Ytu-Mal&apos;Ganis
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <img
-            src="Matt.png"
-            alt="picture of GM"
-            className="h-48 w-48 rounded-lg"
-          />
         </div>
       </Card>
     </div>
@@ -285,7 +260,7 @@ function LinksSection() {
       <div className={underlineClassName}>
         <h2 className="text-2xl font-bold">Links</h2>
       </div>
-      <div>
+      <div className="text-xl">
         <a
           href={warcraftlogspage}
           target="_blank"
@@ -295,7 +270,7 @@ function LinksSection() {
           Warcraft Logs
         </a>
       </div>
-      <div>
+      <div className="text-xl">
         <a
           href={raideriopage}
           target="_blank"
@@ -306,5 +281,79 @@ function LinksSection() {
         </a>
       </div>
     </Card>
+  );
+}
+
+function Contact() {
+  return (
+    <div className="mb-2 max-w-xl">
+      <Card id="contact">
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div>
+            <div className={underlineClassName}>
+              <h2 className="text-2xl font-bold">Contact</h2>
+            </div>
+            <p className="mt-1 text-sm opacity-70">Reach out to our GM</p>
+
+            <div className="mt-4 space-y-3">
+              <div className="flex items-center gap-3">
+                <FaDiscord size={22} className="opacity-80" />
+                <span>
+                  <span className="opacity-70">Discord:</span> dwarf1
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <FaBattleNet size={22} className="opacity-80" />
+                <span>
+                  <span className="opacity-70">Battle.net:</span> Matt#15352
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <FaUser size={22} className="opacity-80" />
+                <span>
+                  <span className="opacity-70">Main:</span> Ytu-Mal&apos;Ganis
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <img
+            src="Matt.png"
+            alt="picture of GM"
+            className="h-48 w-48 rounded-lg"
+          />
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function UsefulResources() {
+  return (
+    <div className="mb-2 max-w-xl">
+      <Card>
+        <div className={underlineClassName}>
+          <h2 className="text-2xl font-bold">Useful Resources</h2>
+        </div>
+        <ul className="space-y-2 text-xl">
+          {usefulResources.map((resource) => (
+            <li key={resource.url}>
+              <a
+                href={resource.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:underline"
+              >
+                {resource.name}
+              </a>
+              {" - "}
+              <span className="text-lg">{resource.description}</span>
+            </li>
+          ))}
+        </ul>
+      </Card>
+    </div>
   );
 }
