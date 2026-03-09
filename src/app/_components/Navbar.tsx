@@ -53,7 +53,7 @@ export default function Navbar() {
                   : "hover:underline"
               }
             >
-              Twitch Streams
+              {/* Twitch Streams
             </Link>
             <Link
               href="/Clips"
@@ -62,7 +62,7 @@ export default function Navbar() {
                   ? "text-blue-300 underline"
                   : "hover:underline"
               }
-            >
+            > */}
               RYE Clips
             </Link>
             {/* <Link

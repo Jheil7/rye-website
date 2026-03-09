@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-export async function fetchRaiderIO(apiURL) {
+export async function raiderIOData(apiURL) {
   const res = await fetch(apiURL);
 
   if (!res.ok) {

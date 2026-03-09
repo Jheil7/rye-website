@@ -2,7 +2,7 @@ import Card from "../_components/Card";
 import { CLASS_BY_ID, type WowClass } from "src/classes";
 import { warcraftlogsFetch } from "../../lib/warcraftlogs api/warcraftlogsfetch";
 import { getAPI } from "../../blizzard api/blizzardfetch";
-import { fetchRaiderIO } from "../raiderio/raideriofetch";
+import { raiderIOData } from "../raiderio/raideriofetch";
 
 const zoneID = 44; // 44 = Manaforge
 
@@ -258,7 +258,7 @@ async function fetchRaiderIOScore(
     serverSlug,
   )}&name=${encodeURIComponent(characterName)}&fields=mythic_plus_scores_by_season%3Acurrent`;
 
-  const data = (await fetchRaiderIO(baseURL)) as RaiderIOResponse;
+  const data = (await raiderIOData(baseURL)) as RaiderIOResponse;
   const raiderIOScore =
     data.mythic_plus_scores_by_season?.[0]?.scores?.all ?? null;
   return { raiderIOScore };

@@ -6,17 +6,20 @@ import { FaBattleNet } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
 import Card from "./_components/Card";
 import { warcraftlogsFetch } from "../lib/warcraftlogs api/warcraftlogsfetch";
-import { fetchRaiderIO } from "./raiderio/raideriofetch";
+import { fetchRaiderIO, raiderIOData } from "./raiderio/raideriofetch";
 
 const rolesNeeded = [
-  { classKey: "mage" },
-  { classKey: "rogue" },
-  { classKey: "deathknight", specKey: "blood" },
-  { classKey: "druid", specKey: "restoration" },
+  { classKey: "deathknight" },
+  { classKey: "warrior", specKey: "protection" },
+  { classKey: "druid", specKey: "guardian" },
+  { classKey: "paladin", specKey: "protection" },
+  { classKey: "demonhunter", specKey: "vengeance" },
 ];
 const warcraftlogspage =
   "https://www.warcraftlogs.com/guild/us/malganis/raise%20your%20eyes";
 const raideriopage = "https://raider.io/guilds/us/malganis/Raise%20Your%20Eyes";
+
+const underlineClassName = "mb-2 border-b border-slate-600 pb-1";
 
 export default function Home() {
   return (
@@ -56,7 +59,9 @@ function AboutSection() {
     <div>
       <Card>
         <div>
-          <h2 className="text-center text-2xl font-bold">About Us</h2>
+          <div className={underlineClassName}>
+            <h2 className="text-center text-2xl font-bold">About Us</h2>
+          </div>
           <h3 className="text-md">
             <p>
               {`Welcome to Raise Your Eyes, a Cutting Edge raiding guild on
@@ -90,7 +95,9 @@ function RaidSchedule() {
     <div>
       <Card>
         <div>
-          <h2 className="mb-1 text-2xl font-bold">Raid Schedule</h2>
+          <div className={underlineClassName}>
+            <h2 className="text-2xl font-bold">Raid Schedule</h2>
+          </div>
           <h3 className="text-md">Tuesday 9:00pm-12:00am EST</h3>
           <h3 className="text-md">Thursday 9:00pm-12:00am EST</h3>
           {/* <h3 className="text-lg">
@@ -106,7 +113,9 @@ function RolesSection() {
   return (
     <div>
       <Card>
-        <h2 className="text-2xl font-bold">Roles Needed</h2>
+        <div className={underlineClassName}>
+          <h2 className="text-2xl font-bold">Roles Needed</h2>
+        </div>
         <div className="mt-2 space-y-3">
           {rolesNeeded.map(({ classKey, specKey }) => {
             const cls = CLASSES[classKey];
@@ -129,7 +138,8 @@ function RolesSection() {
         </div>
 
         <div className="mt-4">
-          All exceptional dps and healers will be considered
+          Currently accepting all experienced raiders. The above roles are
+          currently our highest priority.
         </div>
       </Card>
     </div>
@@ -142,7 +152,9 @@ function Contact() {
       <Card id="contact">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
-            <h2 className="text-2xl font-bold">Contact</h2>
+            <div className={underlineClassName}>
+              <h2 className="text-2xl font-bold">Contact</h2>
+            </div>
             <p className="mt-1 text-sm opacity-70">Reach out to our GM</p>
 
             <div className="mt-4 space-y-3">
@@ -207,31 +219,72 @@ async function RaidProgress() {
     guildRankFetch?.data?.guildData?.guild?.zoneRanking?.progress?.serverRank
       ?.number;
 
+  const highestBoss = await fetchHighestBossProgress();
+  const highestBossName = highestBoss.bossName;
+  const highestBossPercentage = highestBoss.bossPercentage;
+
   return (
     <Card>
-      <h2 className="mb-1 text-center text-2xl font-bold">Raid Progress</h2>
+      <div className={underlineClassName}>
+        <h2 className="mb-1 text-center text-2xl font-bold">Raid Progress</h2>
+      </div>
+
       <div className="grid gap-3 text-center md:grid-cols-3">
-        <div>
-          <h2 className="font-semibold">Current guild rank (world)</h2>
-          <h3 className="text-xl font-bold"> {worldRank}</h3>
-        </div>
-        <div>
-          <h2 className="font-semibold">Current guild rank (server)</h2>
-          <h3 className="text-xl font-bold"> {serverRank}</h3>
-        </div>
-        <div>
-          <h2 className="font-semibold">Current boss progress</h2>
-          <h3 className="text-xl font-bold">Working on API call</h3>
-        </div>
+        <Card className="border-slate-500/80 bg-slate-600/40 py-5">
+          <h2 className="font-semibold text-slate-300">
+            Current guild rank (world)
+          </h2>
+          <h3 className="mt-3 text-4xl font-bold"> {worldRank}</h3>
+        </Card>
+        <Card className="border-slate-500/80 bg-slate-600/40 py-5">
+          <h2 className="font-semibold text-slate-300">
+            Current guild rank (server)
+          </h2>
+          <h3 className="mt-3 text-4xl font-bold"> {serverRank}</h3>
+        </Card>
+        <Card className="border-slate-500/80 bg-slate-600/40 py-5">
+          <h2 className="font-semibold text-slate-300">
+            Current boss progress
+          </h2>
+          <h3 className="text-2xl font-bold">
+            {highestBossName} : {highestBossPercentage}%
+          </h3>
+          <div className="mt-2 h-2 w-full rounded-full bg-slate-800">
+            <div
+              className={`h-2 rounded-full transition-all duration-500 ${getHealthColor(highestBossPercentage)}`}
+              style={{ width: `${highestBossPercentage}%` }}
+            />
+          </div>
+        </Card>
       </div>
     </Card>
   );
 }
 
+async function fetchHighestBossProgress() {
+  const baseURL = `https://raider.io/api/v1/live-tracking/guild/boss-progress?access_key=${process.env.RAIDERIO_API_KEY}&raid=manaforge-omega&boss=latest&difficulty=mythic&period=until_kill&region=us&realm=mal-ganis&guild=raise%20your%20eyes`;
+
+  const bossData = await raiderIOData(baseURL);
+
+  return {
+    bossName: bossData.boss?.name,
+    bossPercentage: bossData.bestPercent,
+  };
+}
+
+function getHealthColor(percent) {
+  if (percent >= 75) return "bg-green-500";
+  if (percent >= 50) return "bg-yellow-400";
+  if (percent >= 25) return "bg-orange-400";
+  return "bg-red-500";
+}
+
 function LinksSection() {
   return (
     <Card>
-      <h2 className="mb-1 text-2xl font-bold">Links</h2>
+      <div className={underlineClassName}>
+        <h2 className="text-2xl font-bold">Links</h2>
+      </div>
       <div>
         <a
           href={warcraftlogspage}
