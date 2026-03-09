@@ -71,7 +71,7 @@ export default function Home() {
         <UsefulResources />
       </div>
       <footer className="mt-12 border-t border-slate-700 pt-4 pb-6 text-center text-sm text-slate-400">
-        © {new Date().getFullYear()} Raise Your Eyes • Mal'Ganis-US
+        {new Date().getFullYear()} Raise Your Eyes • Mal'Ganis-US
       </footer>
     </div>
   );
