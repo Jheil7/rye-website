@@ -70,6 +70,9 @@ export default function Home() {
         <Contact />
         <UsefulResources />
       </div>
+      <footer className="mt-12 border-t border-slate-700 pt-4 pb-6 text-center text-sm text-slate-400">
+        © {new Date().getFullYear()} Raise Your Eyes • Mal'Ganis-US
+      </footer>
     </div>
   );
 }
@@ -286,7 +289,7 @@ function LinksSection() {
 
 function Contact() {
   return (
-    <div className="mb-2 max-w-xl">
+    <div className="max-w-xl">
       <Card id="contact">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
@@ -332,7 +335,7 @@ function Contact() {
 
 function UsefulResources() {
   return (
-    <div className="mb-2 max-w-xl">
+    <div className="max-w-xl">
       <Card>
         <div className={underlineClassName}>
           <h2 className="text-2xl font-bold">Useful Resources</h2>
