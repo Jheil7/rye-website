@@ -45,7 +45,7 @@ export default function Navbar() {
               Apply
             </Link>
             {/* <Link href="/#contact">Contact</Link> */}
-            <Link
+            {/* <Link
               href="/TwitchStreams"
               className={
                 pathName === "/TwitchStreams"
@@ -53,8 +53,8 @@ export default function Navbar() {
                   : "hover:underline"
               }
             >
-              {/* Twitch Streams
-            </Link>
+              Twitch Streams
+            </Link> */}
             <Link
               href="/Clips"
               className={
@@ -62,7 +62,7 @@ export default function Navbar() {
                   ? "text-blue-300 underline"
                   : "hover:underline"
               }
-            > */}
+            >
               RYE Clips
             </Link>
             {/* <Link

@@ -8,13 +8,7 @@ import Card from "./_components/Card";
 import { warcraftlogsFetch } from "../lib/warcraftlogs api/warcraftlogsfetch";
 import { fetchRaiderIO, raiderIOData } from "./raiderio/raideriofetch";
 
-const rolesNeeded = [
-  { classKey: "deathknight" },
-  { classKey: "warrior", specKey: "protection" },
-  { classKey: "druid", specKey: "guardian" },
-  { classKey: "paladin", specKey: "protection" },
-  { classKey: "demonhunter", specKey: "vengeance" },
-];
+const rolesNeeded = [];
 const warcraftlogspage =
   "https://www.warcraftlogs.com/guild/us/malganis/raise%20your%20eyes";
 const raideriopage = "https://raider.io/guilds/us/malganis/Raise%20Your%20Eyes";
@@ -32,6 +26,11 @@ const usefulResources = [
     name: "Archon",
     url: "https://www.archon.gg/wow",
     description: "Meta class builds and statistics",
+  },
+  {
+    name: "Lorrgs",
+    url: "https://lorrgs.io/",
+    description: "Check fight timings to compare cooldown usage.",
   },
 
   {
@@ -162,8 +161,8 @@ function RolesSection() {
         </div>
 
         <div className="mt-4">
-          Currently accepting all experienced raiders. The above roles are
-          currently our highest priority.
+          Currently accepting all experienced raiders. Ranged dps are currently
+          the top priority.
         </div>
       </Card>
     </div>
