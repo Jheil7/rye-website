@@ -8,6 +8,7 @@ import Card from "./_components/Card";
 import { warcraftlogsFetch } from "../lib/warcraftlogs api/warcraftlogsfetch";
 import { fetchRaiderIO, raiderIOData } from "./raiderio/raideriofetch";
 
+const zoneID = 44; //midnight
 const rolesNeeded = [];
 const warcraftlogspage =
   "https://www.warcraftlogs.com/guild/us/malganis/raise%20your%20eyes";
@@ -173,7 +174,7 @@ async function RaidProgress() {
   const worldRankQuery = `query {
     guildData {
       guild(name: "Raise Your Eyes", serverSlug: "malganis", serverRegion: "US"){
-          zoneRanking(zoneId:44){
+          zoneRanking(zoneId:${zoneID}}){
                   progress{
                       worldRank{
                           number
@@ -199,6 +200,14 @@ async function RaidProgress() {
   const highestBoss = await fetchHighestBossProgress();
   const highestBossName = highestBoss.bossName;
   const highestBossPercentage = highestBoss.bossPercentage;
+  const difficultyAbbreviations = {
+    normal: "N",
+    heroic: "H",
+    mythic: "M",
+  };
+  const highestBossDifficulty =
+    difficultyAbbreviations[highestBoss.difficulty?.toLowerCase()] ??
+    highestBoss.difficulty;
 
   return (
     <Card>
@@ -224,7 +233,7 @@ async function RaidProgress() {
             Current boss progress
           </h2>
           <h3 className="text-2xl font-bold">
-            {highestBossName} : {highestBossPercentage}%
+            {highestBossDifficulty} {highestBossName} : {highestBossPercentage}%
           </h3>
           <div className="mt-2 h-2 w-full rounded-full bg-slate-800">
             <div
@@ -239,13 +248,31 @@ async function RaidProgress() {
 }
 
 async function fetchHighestBossProgress() {
-  const baseURL = `https://raider.io/api/v1/live-tracking/guild/boss-progress?access_key=${process.env.RAIDERIO_API_KEY}&raid=manaforge-omega&boss=latest&difficulty=mythic&period=until_kill&region=us&realm=mal-ganis&guild=raise%20your%20eyes`;
+  // const baseURL = `https://raider.io/api/v1/live-tracking/guild/boss-progress?access_key=${process.env.RAIDERIO_API_KEY}&raid=manaforge-omega&boss=latest&difficulty=mythic&period=until_kill&region=us&realm=mal-ganis&guild=raise%20your%20eyes`;
 
-  const bossData = await raiderIOData(baseURL);
+  const buildBossProgressUrl = (difficulty) =>
+    `https://raider.io/api/v1/live-tracking/guild/boss-progress?access_key=${process.env.RAIDERIO_API_KEY}&raid=tier-mn-1&boss=latest&difficulty=${difficulty}&period=until_kill&region=us&realm=Mal-Ganis&guild=Raise%20your%20eyes`;
+
+  let bossData;
+
+  try {
+    bossData = await raiderIOData(buildBossProgressUrl("mythic"));
+  } catch {
+    bossData = null;
+  }
+
+  if (!bossData?.boss?.name) {
+    try {
+      bossData = await raiderIOData(buildBossProgressUrl("heroic"));
+    } catch {
+      bossData = null;
+    }
+  }
 
   return {
-    bossName: bossData.boss?.name,
-    bossPercentage: bossData.bestPercent,
+    bossName: bossData?.boss?.name ?? null,
+    bossPercentage: bossData?.bestPercent ?? null,
+    difficulty: bossData?.raid?.difficulty ?? null,
   };
 }
 
