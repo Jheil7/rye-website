@@ -7,8 +7,12 @@ import { FaUser } from "react-icons/fa";
 import Card from "./_components/Card";
 import { warcraftlogsFetch } from "../lib/warcraftlogs api/warcraftlogsfetch";
 import { fetchRaiderIO, raiderIOData } from "./raiderio/raideriofetch";
+import {
+  getLatestRaidRankSnapshot,
+  getRankChange,
+} from "~/lib/raidRankHistory";
 
-const zoneID = 44; //midnight
+const zoneID = 46; //midnight
 const rolesNeeded = [];
 const warcraftlogspage =
   "https://www.warcraftlogs.com/guild/us/malganis/raise%20your%20eyes";
@@ -174,7 +178,7 @@ async function RaidProgress() {
   const worldRankQuery = `query {
     guildData {
       guild(name: "Raise Your Eyes", serverSlug: "malganis", serverRegion: "US"){
-          zoneRanking(zoneId:${zoneID}}){
+          zoneRanking(zoneId:${zoneID}){
                   progress{
                       worldRank{
                           number
@@ -209,6 +213,16 @@ async function RaidProgress() {
     difficultyAbbreviations[highestBoss.difficulty?.toLowerCase()] ??
     highestBoss.difficulty;
 
+  const latestSnapshot = await getLatestRaidRankSnapshot("midnight_s1");
+
+  const worldRankChange = getRankChange(
+    worldRank,
+    latestSnapshot?.worldRank ?? null,
+  );
+  const serverRankChange = getRankChange(
+    serverRank,
+    latestSnapshot?.serverRank ?? null,
+  );
   return (
     <Card>
       <div className={underlineClassName}>
@@ -216,32 +230,105 @@ async function RaidProgress() {
       </div>
 
       <div className="grid gap-3 text-center md:grid-cols-3">
-        <Card className="border-slate-500/80 bg-slate-600/40 py-5">
-          <h2 className="font-semibold text-slate-300">
+        <Card className="flex h-full flex-col border-slate-500/80 bg-slate-600/40 py-5">
+          <h2 className="text-sm font-semibold text-slate-200">
             Current guild rank (world)
           </h2>
-          <h3 className="mt-3 text-4xl font-bold"> {worldRank}</h3>
+
+          <div className="mt-3 flex flex-1 items-center justify-center">
+            <p className="text-4xl leading-tight font-bold">#{worldRank}</p>
+          </div>
+
+          {worldRankChange ? (
+            <div
+              className={`mt-3 rounded-full py-1 text-center text-sm font-semibold ${
+                worldRankChange.direction === "up"
+                  ? "border border-green-500/40 bg-green-500/15 text-green-400"
+                  : worldRankChange.direction === "down"
+                    ? "border border-red-500/40 bg-red-500/15 text-red-400"
+                    : "border border-slate-500/40 bg-slate-500/10 text-slate-300"
+              }`}
+            >
+              {worldRankChange.direction === "up" &&
+                `↑ ${worldRankChange.amount} from last week`}
+              {worldRankChange.direction === "down" &&
+                `↓ ${worldRankChange.amount} from last week`}
+              {worldRankChange.direction === "same" &&
+                "No change from last week"}
+            </div>
+          ) : (
+            <div className="mt-3 rounded-full border border-slate-500/40 bg-slate-500/10 py-1 text-center text-sm font-semibold text-slate-300">
+              No previous data
+            </div>
+          )}
         </Card>
-        <Card className="border-slate-500/80 bg-slate-600/40 py-5">
-          <h2 className="font-semibold text-slate-300">
+
+        <Card className="flex h-full flex-col border-slate-500/80 bg-slate-600/40 py-5">
+          <h2 className="text-sm font-semibold text-slate-200">
             Current guild rank (server)
           </h2>
-          <h3 className="mt-3 text-4xl font-bold"> {serverRank}</h3>
+
+          <div className="mt-3 flex flex-1 items-center justify-center">
+            <p className="text-4xl leading-tight font-bold">#{serverRank}</p>
+          </div>
+
+          {serverRankChange ? (
+            <div
+              className={`mt-3 rounded-full py-1 text-center text-sm font-semibold ${
+                serverRankChange.direction === "up"
+                  ? "border border-green-500/40 bg-green-500/15 text-green-400"
+                  : serverRankChange.direction === "down"
+                    ? "border border-red-500/40 bg-red-500/15 text-red-400"
+                    : "border border-slate-500/40 bg-slate-500/10 text-slate-300"
+              }`}
+            >
+              {serverRankChange.direction === "up" &&
+                `↑ ${serverRankChange.amount} from last week`}
+              {serverRankChange.direction === "down" &&
+                `↓ ${serverRankChange.amount} from last week`}
+              {serverRankChange.direction === "same" &&
+                "No change from last week"}
+            </div>
+          ) : (
+            <div className="mt-3 rounded-full border border-slate-500/40 bg-slate-500/10 py-1 text-center text-sm font-semibold text-slate-300">
+              No previous data
+            </div>
+          )}
         </Card>
-        <Card className="border-slate-500/80 bg-slate-600/40 py-5">
-          <h2 className="font-semibold text-slate-300">
+
+        <Card className="flex h-full flex-col border-slate-500/80 bg-slate-600/40 py-5">
+          <h2 className="text-sm font-semibold text-slate-200">
             Current boss progress
           </h2>
-          <h3 className="text-2xl font-bold">
-            {`(${highestBossDifficulty})`} {highestBossName} :{" "}
-            {highestBossPercentage}%
-          </h3>
-          <div className="mt-2 h-2 w-full rounded-full bg-slate-800">
-            <div
-              className={`h-2 rounded-full transition-all duration-500 ${getHealthColor(highestBossPercentage)}`}
-              style={{ width: `${highestBossPercentage}%` }}
-            />
+
+          <div className="mt-3 flex flex-1 flex-col justify-center">
+            <p className="text-2xl leading-tight font-bold">
+              Heroic {highestBossName}
+            </p>
+
+            <p
+              className={`mt-2 text-lg font-semibold ${
+                highestBossPercentage === 0
+                  ? "text-green-400"
+                  : "text-slate-100"
+              }`}
+            >
+              {highestBossPercentage}%
+            </p>
           </div>
+
+          {highestBossPercentage === 0 ? (
+            <div className="mt-3 rounded-full border border-green-500/40 bg-green-500/15 py-1 text-center text-sm font-semibold text-green-400">
+              Boss Defeated
+            </div>
+          ) : (
+            <div className="mt-3 h-2 w-full rounded-full bg-slate-800">
+              <div
+                className={`h-2 rounded-full transition-all duration-500 ${getHealthColor(highestBossPercentage)}`}
+                style={{ width: `${highestBossPercentage}%` }}
+              />
+            </div>
+          )}
         </Card>
       </div>
     </Card>
