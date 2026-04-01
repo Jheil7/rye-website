@@ -8,7 +8,7 @@ import Card from "./_components/Card";
 import { warcraftlogsFetch } from "../lib/warcraftlogs api/warcraftlogsfetch";
 import { fetchRaiderIO, raiderIOData } from "./raiderio/raideriofetch";
 import {
-  getLatestRaidRankSnapshot,
+  getPreviousRaidRankSnapshot,
   getRankChange,
 } from "~/lib/raidRankHistory";
 
@@ -213,15 +213,15 @@ async function RaidProgress() {
     difficultyAbbreviations[highestBoss.difficulty?.toLowerCase()] ??
     highestBoss.difficulty;
 
-  const latestSnapshot = await getLatestRaidRankSnapshot("midnight_s1");
+  const previousSnapshot = await getPreviousRaidRankSnapshot("midnight_s1");
 
   const worldRankChange = getRankChange(
     worldRank,
-    latestSnapshot?.worldRank ?? null,
+    previousSnapshot?.worldRank ?? null,
   );
   const serverRankChange = getRankChange(
     serverRank,
-    latestSnapshot?.serverRank ?? null,
+    previousSnapshot?.serverRank ?? null,
   );
   return (
     <Card>

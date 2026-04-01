@@ -10,9 +10,22 @@ export type RaidRankSnapshot = {
 export async function getLatestRaidRankSnapshot(
   raidTier: string,
 ): Promise<RaidRankSnapshot | null> {
+  return getRaidRankSnapshotAtOffset(raidTier, 0);
+}
+
+export async function getPreviousRaidRankSnapshot(
+  raidTier: string,
+): Promise<RaidRankSnapshot | null> {
+  return getRaidRankSnapshotAtOffset(raidTier, 1);
+}
+
+async function getRaidRankSnapshotAtOffset(
+  raidTier: string,
+  offset: number,
+): Promise<RaidRankSnapshot | null> {
   const indexKey = `raid_rank:${raidTier}:index`;
 
-  const keys: string[] = await redis.lrange(indexKey, 0, 0);
+  const keys: string[] = await redis.lrange(indexKey, offset, offset);
 
   if (!keys.length) {
     return null;
