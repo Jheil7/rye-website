@@ -303,7 +303,7 @@ async function RaidProgress() {
 
           <div className="mt-3 flex flex-1 flex-col justify-center">
             <p className="text-2xl leading-tight font-bold">
-              Heroic {highestBossName}
+              {highestBossDifficulty} {highestBossName}
             </p>
 
             <p

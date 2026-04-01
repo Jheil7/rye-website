@@ -39,7 +39,7 @@ async function fetchGuildRanks(zoneID: number): Promise<{
   const query = `query {
     guildData {
       guild(name: "Raise Your Eyes", serverSlug: "malganis", serverRegion: "US") {
-        zoneRanking(zoneID: ${zoneID}) {
+        zoneRanking(zoneId: ${zoneID}) {
           progress {
             worldRank {
               number
@@ -93,6 +93,18 @@ export async function GET(req: Request) {
   }
 
   const { worldRank, serverRank } = await fetchGuildRanks(zoneID);
+
+  if (worldRank == null && serverRank == null) {
+    return NextResponse.json(
+      {
+        ok: false,
+        message: "Warcraft Logs returned no raid rank data",
+        raidTier,
+        zoneID,
+      },
+      { status: 502 },
+    );
+  }
 
   const snapshot: RaidRankSnapshot = {
     capturedAt: new Date().toISOString(),
