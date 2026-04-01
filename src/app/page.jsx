@@ -250,9 +250,9 @@ async function RaidProgress() {
               }`}
             >
               {worldRankChange.direction === "up" &&
-                `↑ ${worldRankChange.amount} from last week`}
-              {worldRankChange.direction === "down" &&
                 `↓ ${worldRankChange.amount} from last week`}
+              {worldRankChange.direction === "down" &&
+                `↑ ${worldRankChange.amount} from last week`}
               {worldRankChange.direction === "same" &&
                 "No change from last week"}
             </div>
@@ -283,9 +283,9 @@ async function RaidProgress() {
               }`}
             >
               {serverRankChange.direction === "up" &&
-                `↑ ${serverRankChange.amount} from last week`}
-              {serverRankChange.direction === "down" &&
                 `↓ ${serverRankChange.amount} from last week`}
+              {serverRankChange.direction === "down" &&
+                `↑ ${serverRankChange.amount} from last week`}
               {serverRankChange.direction === "same" &&
                 "No change from last week"}
             </div>
