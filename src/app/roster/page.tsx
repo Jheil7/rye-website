@@ -4,7 +4,7 @@ import { warcraftlogsFetch } from "../../lib/warcraftlogs api/warcraftlogsfetch"
 import { getAPI } from "../../blizzard api/blizzardfetch";
 import { raiderIOData } from "../raiderio/raideriofetch";
 
-const zoneID = 44; // 44 = Manaforge 45=Midnight??
+const zoneID = 46; // 44 = Manaforge 45=Midnight??
 
 // API prefixes/suffixes
 const warcraftlogsURL = "https://www.warcraftlogs.com/character/us";
