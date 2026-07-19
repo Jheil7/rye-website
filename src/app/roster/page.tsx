@@ -1,23 +1,15 @@
-import Card from "../_components/Card";
-import { CLASS_BY_ID, type WowClass } from "src/classes";
-import { warcraftlogsFetch } from "../../lib/warcraftlogs api/warcraftlogsfetch";
-import { getAPI } from "../../blizzard api/blizzardfetch";
+import { CLASS_BY_ID } from "~/classes";
+import { getAPI } from "~/blizzard api/blizzardfetch";
+import { warcraftlogsFetch } from "~/lib/warcraftlogs api/warcraftlogsfetch";
 import { raiderIOData } from "../raiderio/raideriofetch";
+import { RosterDirectory, type RosterDirectoryMember } from "./RosterDirectory";
 
-const zoneID = 46; // 44 = Manaforge 45=Midnight??
-
-// API prefixes/suffixes
+const zoneID = 46;
 const warcraftlogsURL = "https://www.warcraftlogs.com/character/us";
 const guildAPI =
   "https://us.api.blizzard.com/data/wow/guild/malganis/raise-your-eyes/roster?namespace=profile-us&locale=en_US";
 const characterAPIPrefix = "https://us.api.blizzard.com/profile/wow/character/";
 const characterAPISuffix = "?namespace=profile-us";
-
-// className for roster
-const columnStructure =
-  "grid grid-cols-[30px_0.15fr_0.25fr_0.1fr_0.2fr_0.2fr_160px] items-center gap-4 py-2 text-lg";
-
-/* ---------------- Types (minimal, only what we use) ---------------- */
 
 type GuildMember = {
   rank: number;
@@ -72,133 +64,72 @@ type LocalizedString = {
   [key: string]: string | undefined;
 };
 
-/* ---------------- Page ---------------- */
-
-export default async function App() {
+export default async function RosterPage() {
   const roster = await showRoster();
-  const rosterCount = roster.length;
 
   const sortedRoster = [...roster].sort((a, b) =>
     a.character.name.localeCompare(b.character.name),
   );
 
   const enrichedRoster: EnrichedMember[] = await Promise.all(
-    sortedRoster.map(async (m) => {
+    sortedRoster.map(async (member) => {
       const [wcl, blizz, raiderIO] = await Promise.all([
         fetchBestParseAvg(
-          m.character.name,
-          m.character.realm.slug,
+          member.character.name,
+          member.character.realm.slug,
           zoneID,
         ).catch(() => ({ dpsAvg: null, hpsAvg: null })),
 
-        getCharacter(m.character.realm.slug, m.character.name.toLowerCase())
-          .then((c) => ({
-            average_item_level: c?.average_item_level ?? null,
-            activeSpecName: c?.active_spec?.name?.en_US ?? null,
+        getCharacter(
+          member.character.realm.slug,
+          member.character.name.toLowerCase(),
+        )
+          .then((character) => ({
+            average_item_level: character?.average_item_level ?? null,
+            activeSpecName: character?.active_spec?.name?.en_US ?? null,
           }))
-          .catch(() => ({ average_item_level: null, activeSpecName: null })),
+          .catch(() => ({
+            average_item_level: null,
+            activeSpecName: null,
+          })),
 
-        fetchRaiderIOScore(m.character.name, m.character.realm.slug).catch(
-          () => ({
-            raiderIOScore: null,
-          }),
-        ),
+        fetchRaiderIOScore(
+          member.character.name,
+          member.character.realm.slug,
+        ).catch(() => ({
+          raiderIOScore: null,
+        })),
       ]);
 
-      return { ...m, ...wcl, ...blizz, ...raiderIO };
+      return { ...member, ...wcl, ...blizz, ...raiderIO };
     }),
   );
 
+  const members: RosterDirectoryMember[] = enrichedRoster.map((member) => {
+    const classId = member.character.playable_class.id;
+    const wowClass = CLASS_BY_ID[classId];
+
+    return {
+      id: member.character.id,
+      name: member.character.name,
+      className: wowClass?.name ?? `Class ${classId}`,
+      classIcon: wowClass?.icon ?? "/logo.png",
+      specName: member.activeSpecName,
+      itemLevel: member.average_item_level,
+      dpsAvg: member.dpsAvg,
+      hpsAvg: member.hpsAvg,
+      raiderIOScore: member.raiderIOScore,
+      logsUrl: `${warcraftlogsURL}/${member.character.realm.slug}/${encodeURIComponent(
+        member.character.name,
+      )}`,
+    };
+  });
+
   return (
-    <div className="mx-auto mt-6 max-w-6xl space-y-6 px-6">
-      <Card>
-        <h3 className="text-xl font-bold">Mythic Roster ({rosterCount})</h3>
-
-        <li className={columnStructure}>
-          <div>Name</div>
-          <div></div>
-          <div>Current Spec/Class</div>
-          <div>Ilvl</div>
-          <div className="leading-tight">
-            <span className="block">Best Parse Avg.</span>
-            <span className="block">(DPS/Heal)</span>
-          </div>
-          <div>M+ Score</div>
-          <div>Warcraftlogs URL</div>
-        </li>
-
-        <ul>
-          {enrichedRoster.map((member) => {
-            const classId: number = member.character.playable_class.id;
-            const wowClass: WowClass | undefined = CLASS_BY_ID[classId];
-            const logsURL = `${warcraftlogsURL}/${member.character.realm.slug}/${encodeURIComponent(
-              member.character.name,
-            )}`;
-
-            return (
-              <li className={columnStructure} key={member.character.id}>
-                {/* icon */}
-                <img
-                  src={wowClass?.icon}
-                  alt={wowClass?.name ?? `Class ${classId}`}
-                  className="h-8 w-8 rounded"
-                />
-
-                {/* name */}
-                <span className="text-lg">{member.character.name}</span>
-
-                {/* class/spec */}
-                <span className="text-lg opacity-70">
-                  {member.activeSpecName ?? "—"}{" "}
-                  {wowClass ? wowClass.name : `Class ${classId}`}
-                </span>
-
-                {/* Ilvl */}
-                <span className="text-lg">
-                  {member.average_item_level ?? "—"}
-                </span>
-
-                {/* avg parse */}
-                <span className="inline-flex items-center gap-1 text-lg">
-                  <span className={getParseColor(member.dpsAvg)}>
-                    {member.dpsAvg?.toFixed(1) ?? "—"}
-                  </span>
-                  <span className="opacity-60">/</span>
-                  <span className={getParseColor(member.hpsAvg)}>
-                    {member.hpsAvg?.toFixed(1) ?? "—"}
-                  </span>
-                </span>
-
-                {/* raiderio score */}
-                <span className="text-lg">{member.raiderIOScore ?? "—"}</span>
-
-                {/* warcraftlogs URL */}
-                <a
-                  href={logsURL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="break-all text-blue-400 hover:underline"
-                >
-                  WCL/{member.character.name}
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-      </Card>
+    <div className="mx-auto max-w-6xl px-6 pt-6 pb-24 sm:pt-8">
+      <RosterDirectory members={members} />
     </div>
   );
-}
-
-/* ---------------- Helpers ---------------- */
-
-function getParseColor(avg: number | null): string {
-  if (typeof avg !== "number") return "text-gray-400";
-  if (avg >= 95) return "text-orange-400";
-  if (avg >= 75) return "text-purple-500";
-  if (avg >= 50) return "text-blue-500";
-  if (avg >= 25) return "text-green-500";
-  return "text-gray-400";
 }
 
 async function showRoster(): Promise<GuildMember[]> {
@@ -239,10 +170,14 @@ async function fetchBestParseAvg(
 `;
 
   const fetchWCLJSON = (await warcraftlogsFetch(query)) as WCLResponse;
-  const char = fetchWCLJSON?.data?.characterData?.character;
+  const character = fetchWCLJSON?.data?.characterData?.character;
 
-  const dpsObj = char?.dps ? (parseZR(char.dps) as ZoneRankingParsed) : null;
-  const hpsObj = char?.hps ? (parseZR(char.hps) as ZoneRankingParsed) : null;
+  const dpsObj = character?.dps
+    ? (parseZR(character.dps) as ZoneRankingParsed)
+    : null;
+  const hpsObj = character?.hps
+    ? (parseZR(character.hps) as ZoneRankingParsed)
+    : null;
 
   return {
     dpsAvg: dpsObj?.bestPerformanceAverage ?? null,

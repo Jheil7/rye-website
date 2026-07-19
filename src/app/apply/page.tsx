@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import Card from "../_components/Card";
+import { Reveal } from "../_components/site/Reveal";
 
 type SubmitStatus = "idle" | "ok" | "err";
 
@@ -23,10 +24,10 @@ export default function ApplyPage() {
   const [status, setStatus] = useState<SubmitStatus>("idle");
   const [error, setError] = useState("");
 
-  async function onSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
 
-    const formEl = e.currentTarget;
+    const formEl = event.currentTarget;
     const form = new FormData(formEl);
 
     setLoading(true);
@@ -53,13 +54,13 @@ export default function ApplyPage() {
       formEl.reset();
     } else {
       setStatus("err");
-      const j: unknown = await res.json().catch(() => ({}));
+      const json: unknown = await res.json().catch(() => ({}));
       const message =
-        typeof j === "object" &&
-        j !== null &&
-        "error" in j &&
-        typeof j.error === "string"
-          ? j.error
+        typeof json === "object" &&
+        json !== null &&
+        "error" in json &&
+        typeof json.error === "string"
+          ? json.error
           : "Something went wrong.";
       setError(message);
     }
@@ -68,81 +69,85 @@ export default function ApplyPage() {
   const row = "grid gap-2 md:grid-cols-[220px_1fr] md:items-center";
   const label = "text-sm font-medium text-slate-200";
   const input =
-    "w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400";
-  const textarea = input + " min-h-[120px] resize-y";
+    "w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#c77dff]";
+  const textarea = `${input} min-h-[120px] resize-y`;
 
   return (
-    <div className="mx-auto mt-6 max-w-3xl px-6">
-      <Card>
-        <h2 className="text-xl font-semibold">Apply</h2>
+    <div className="mx-auto max-w-3xl px-6 pt-6 pb-24 sm:pt-8">
+      <Reveal>
+        <Card>
+          <h2 className="font-cinzel text-2xl font-semibold text-[#f0e9fb]">
+            Apply
+          </h2>
 
-        <form className="mt-6 space-y-4" onSubmit={onSubmit}>
-          <div className={row}>
-            <label className={label} htmlFor="name">
-              Character Name
-            </label>
-            <input
-              id="name"
-              name="name"
-              className={input}
-              placeholder="e.g. Arthas"
-            />
-          </div>
+          <form className="mt-6 space-y-4" onSubmit={onSubmit}>
+            <div className={row}>
+              <label className={label} htmlFor="name">
+                Character Name
+              </label>
+              <input
+                id="name"
+                name="name"
+                className={input}
+                placeholder="e.g. Arthas"
+              />
+            </div>
 
-          <div className={row}>
-            <label className={label} htmlFor="realm">
-              Character Realm
-            </label>
-            <input
-              id="realm"
-              name="realm"
-              className={input}
-              placeholder="e.g. Area-52"
-            />
-          </div>
+            <div className={row}>
+              <label className={label} htmlFor="realm">
+                Character Realm
+              </label>
+              <input
+                id="realm"
+                name="realm"
+                className={input}
+                placeholder="e.g. Area-52"
+              />
+            </div>
 
-          <div className={row}>
-            <label className={label} htmlFor="logs">
-              Warcraftlogs Link
-            </label>
-            <input
-              id="logs"
-              name="logs"
-              className={input}
-              placeholder="https://www.warcraftlogs.com/character/..."
-            />
-          </div>
+            <div className={row}>
+              <label className={label} htmlFor="logs">
+                Warcraftlogs Link
+              </label>
+              <input
+                id="logs"
+                name="logs"
+                className={input}
+                placeholder="https://www.warcraftlogs.com/character/..."
+              />
+            </div>
 
-          <div className="grid gap-2 md:grid-cols-[220px_1fr]">
-            <label className={label} htmlFor="notes">
-              Anything you want to say
-            </label>
-            <textarea
-              id="notes"
-              name="notes"
-              className={textarea}
-              placeholder="Schedule, experience, goals, questions..."
-            />
-          </div>
+            <div className="grid gap-2 md:grid-cols-[220px_1fr]">
+              <label className={label} htmlFor="notes">
+                Anything you want to say
+              </label>
+              <textarea
+                id="notes"
+                name="notes"
+                className={textarea}
+                placeholder="Schedule, experience, goals, questions..."
+              />
+            </div>
 
-          <div className="flex items-center justify-end gap-3 pt-2">
-            {status === "ok" && (
-              <span className="text-sm text-green-400">Submitted!</span>
-            )}
-            {status === "err" && (
-              <span className="text-sm text-red-400">{error}</span>
-            )}
+            <div className="flex items-center justify-end gap-3 pt-2">
+              {status === "ok" && (
+                <span className="text-sm text-green-400">Submitted!</span>
+              )}
+              {status === "err" && (
+                <span className="text-sm text-red-400">{error}</span>
+              )}
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="rounded-md bg-blue-500 px-4 py-2 font-medium text-white hover:bg-blue-400 disabled:opacity-60"
-            >
-              {loading ? "Submitting..." : "Submit"}
-            </button>
-          </div>
-        </form>
-      </Card>
+              <button
+                type="submit"
+                disabled={loading}
+                className="arcane-button-primary disabled:opacity-60"
+              >
+                {loading ? "Submitting..." : "Submit"}
+              </button>
+            </div>
+          </form>
+        </Card>
+      </Reveal>
     </div>
   );
 }
