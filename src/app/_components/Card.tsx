@@ -11,7 +11,7 @@ export default function Card({
 }: CardProps) {
   return (
     <div
-      className={`h-full rounded-lg border border-slate-400 bg-gray-700 p-4 ${className}`.trim()}
+      className={`arcane-panel h-full p-5 sm:p-6 ${className}`.trim()}
       {...props}
     >
       {children}
