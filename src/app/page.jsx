@@ -11,46 +11,29 @@ import {
   RAID_SCHEDULE,
   USEFUL_RESOURCES,
 } from "~/lib/siteContent";
-import { warcraftlogsFetch } from "../lib/warcraftlogs api/warcraftlogsfetch";
 import { raiderIOData } from "./raiderio/raideriofetch";
 import {
   getPreviousRaidRankSnapshot,
   getRankChange,
 } from "~/lib/raidRankHistory";
 
-const zoneID = 46;
 const rolesNeeded = [];
 
 export default async function Home() {
-  const worldRankQuery = `query {
-    guildData {
-      guild(name: "Raise Your Eyes", serverSlug: "malganis", serverRegion: "US"){
-          zoneRanking(zoneId:${zoneID}){
-                  progress{
-                      worldRank{
-                          number
-                      }
-                      serverRank{
-                          number
-                      }
-                  }
-              }
-          }
-      }
-  }`;
+  const worldRankQuery =
+    `https://raider.io/api/v1/guilds/profile?access_key=${process.env.RAIDERIO_API_KEY}` +
+    "&region=us&realm=malganis&name=Raise%20Your%20Eyes&fields=raid_rankings:tier-mn-1";
 
   const [guildRankFetch, highestBoss, previousSnapshot] = await Promise.all([
-    warcraftlogsFetch(worldRankQuery),
+    raiderIOData(worldRankQuery),
     fetchHighestBossProgress(),
     getPreviousRaidRankSnapshot("midnight_s1"),
   ]);
 
   const worldRank =
-    guildRankFetch?.data?.guildData?.guild?.zoneRanking?.progress?.worldRank
-      ?.number ?? null;
+    guildRankFetch?.raid_rankings?.["tier-mn-1"]?.mythic?.world ?? null;
   const serverRank =
-    guildRankFetch?.data?.guildData?.guild?.zoneRanking?.progress?.serverRank
-      ?.number ?? null;
+    guildRankFetch?.raid_rankings?.["tier-mn-1"]?.mythic?.realm ?? null;
 
   const worldRankChange = getRankChange(
     worldRank,
@@ -315,7 +298,7 @@ function ProgressCard({ title, value, status }) {
 
 function BossProgressCard({ boss }) {
   const highestBossName = boss.bossName;
-  const highestBossPercentage = boss.bossPercentage;
+  const highestBossPercentage = Math.trunc(boss.bossPercentage * 10000) / 100;
   const difficultyAbbreviations = {
     normal: "N",
     heroic: "H",
@@ -395,7 +378,7 @@ async function fetchHighestBossProgress() {
 
   return {
     bossName: bossData?.boss?.name ?? null,
-    bossPercentage: bossData?.bestPercent ?? null,
+    bossPercentage: bossData?.boss_percent ?? null,
     difficulty: bossData?.raid?.difficulty ?? null,
   };
 }
